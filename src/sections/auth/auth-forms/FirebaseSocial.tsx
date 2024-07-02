@@ -7,8 +7,6 @@ import useAuth from 'hooks/useAuth';
 
 // assets
 import Google from 'assets/images/icons/google.svg';
-import Twitter from 'assets/images/icons/twitter.svg';
-import Facebook from 'assets/images/icons/facebook.svg';
 
 // ==============================|| FIREBASE - SOCIAL BUTTON ||============================== //
 
@@ -17,26 +15,10 @@ const FirebaseSocial = () => {
   const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
 
   // @ts-ignore
-  const { firebaseFacebookSignIn, firebaseGoogleSignIn, firebaseTwitterSignIn } = useAuth();
+  const { firebaseGoogleSignIn } = useAuth();
   const googleHandler = async () => {
     try {
       await firebaseGoogleSignIn();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const twitterHandler = async () => {
-    try {
-      await firebaseTwitterSignIn();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const facebookHandler = async () => {
-    try {
-      await firebaseFacebookSignIn();
     } catch (err) {
       console.error(err);
     }
@@ -57,24 +39,6 @@ const FirebaseSocial = () => {
         onClick={googleHandler}
       >
         {!matchDownSM && 'Google'}
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        fullWidth={!matchDownSM}
-        startIcon={<img src={Twitter} alt="Twitter" />}
-        onClick={twitterHandler}
-      >
-        {!matchDownSM && 'Twitter'}
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        fullWidth={!matchDownSM}
-        startIcon={<img src={Facebook} alt="Facebook" />}
-        onClick={facebookHandler}
-      >
-        {!matchDownSM && 'Facebook'}
       </Button>
     </Stack>
   );

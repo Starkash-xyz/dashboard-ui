@@ -1,10 +1,11 @@
 import { useEffect, useState, SyntheticEvent } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import {
   Box,
   Button,
+  Divider,
   FormControl,
   FormHelperText,
   Grid,
@@ -21,32 +22,35 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project import
-import IconButton from 'components/@extended/IconButton';
-import AnimateButton from 'components/@extended/AnimateButton';
-
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
-import { openSnackbar } from 'api/snackbar';
+import IconButton from 'components/@extended/IconButton';
+import AnimateButton from 'components/@extended/AnimateButton';
+import FirebaseSocial from './FirebaseSocial';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // types
-import { SnackbarProps } from 'types/snackbar';
 import { StringColorProps } from 'types/password';
 
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
-// ============================|| JWT - REGISTER ||============================ //
+// ============================|| FIREBASE - REGISTER ||============================ //
 
 const AuthRegister = () => {
-  const { register } = useAuth();
+  const { firebaseRegister } = useAuth();
   const scriptedRef = useScriptRef();
-  const navigate = useNavigate();
 
   const [level, setLevel] = useState<StringColorProps>();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleClickConfirmShowPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const handleMouseDownPassword = (event: SyntheticEvent) => {
@@ -66,38 +70,34 @@ const AuthRegister = () => {
     <>
       <Formik
         initialValues={{
-          firstname: '',
-          lastname: '',
           email: '',
-          company: '',
           password: '',
+          confirmPassword: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required('First Name is required'),
-          lastname: Yup.string().max(255).required('Last Name is required'),
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required')
+          password: Yup.string().max(255).required('Password is required'),
+          confirmPassword: Yup.string()
+            .max(255)
+            .required('Confirm password is required')
+            .oneOf([Yup.ref('password')], 'Passwords must match')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            await register(values.email, values.password, values.firstname, values.lastname);
-            if (scriptedRef.current) {
-              setStatus({ success: true });
-              setSubmitting(false);
-              openSnackbar({
-                open: true,
-                message: 'Your registration has been successfully completed.',
-                variant: 'alert',
-                alert: {
-                  color: 'success'
-                }
-              } as SnackbarProps);
-
-              setTimeout(() => {
-                navigate('/login', { replace: true });
-              }, 1500);
-            }
+            await firebaseRegister(values.email, values.password).then(
+              () => {
+                // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
+                // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
+                // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
+                // github issue: https://github.com/formium/formik/issues/2430
+              },
+              (err: any) => {
+                setStatus({ success: false });
+                setErrors({ submit: err.message });
+                setSubmitting(false);
+              }
+            );
           } catch (err: any) {
             console.error(err);
             if (scriptedRef.current) {
@@ -111,73 +111,9 @@ const AuthRegister = () => {
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
-                  <OutlinedInput
-                    id="firstname-login"
-                    type="firstname"
-                    value={values.firstname}
-                    name="firstname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="John"
-                    fullWidth
-                    error={Boolean(touched.firstname && errors.firstname)}
-                  />
-                </Stack>
-                {touched.firstname && errors.firstname && (
-                  <FormHelperText error id="helper-text-firstname-signup">
-                    {errors.firstname}
-                  </FormHelperText>
-                )}
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    id="lastname-signup"
-                    type="lastname"
-                    value={values.lastname}
-                    name="lastname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Doe"
-                    inputProps={{}}
-                  />
-                </Stack>
-                {touched.lastname && errors.lastname && (
-                  <FormHelperText error id="helper-text-lastname-signup">
-                    {errors.lastname}
-                  </FormHelperText>
-                )}
-              </Grid>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="company-signup">Company</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.company && errors.company)}
-                    id="company-signup"
-                    value={values.company}
-                    name="company"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Demo Inc."
-                    inputProps={{}}
-                  />
-                </Stack>
-                {touched.company && errors.company && (
-                  <FormHelperText error id="helper-text-company-signup">
-                    {errors.company}
-                  </FormHelperText>
-                )}
-              </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
+                  <InputLabel htmlFor="email-signup">Email Address</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.email && errors.email)}
@@ -187,7 +123,6 @@ const AuthRegister = () => {
                     name="email"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="demo@company.com"
                     inputProps={{}}
                   />
                 </Stack>
@@ -225,7 +160,6 @@ const AuthRegister = () => {
                         </IconButton>
                       </InputAdornment>
                     }
-                    placeholder="******"
                     inputProps={{}}
                   />
                 </Stack>
@@ -246,6 +180,42 @@ const AuthRegister = () => {
                     </Grid>
                   </Grid>
                 </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="confirm-password-signup">Confirm Password</InputLabel>
+                  <OutlinedInput
+                    fullWidth
+                    error={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                    id="confirm-password-signup"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={values.confirmPassword}
+                    name="confirmPassword"
+                    onBlur={handleBlur}
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickConfirmShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                          color="secondary"
+                        >
+                          {showConfirmPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    inputProps={{}}
+                  />
+                </Stack>
+                {touched.confirmPassword && errors.confirmPassword && (
+                  <FormHelperText error id="helper-text-confirm-password-signup">
+                    {errors.confirmPassword}
+                  </FormHelperText>
+                )}
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="body2">
@@ -270,6 +240,14 @@ const AuthRegister = () => {
                     Create Account
                   </Button>
                 </AnimateButton>
+              </Grid>
+              <Grid item xs={12}>
+                <Divider>
+                  <Typography variant="caption">Sign up with</Typography>
+                </Divider>
+              </Grid>
+              <Grid item xs={12}>
+                <FirebaseSocial />
               </Grid>
             </Grid>
           </form>

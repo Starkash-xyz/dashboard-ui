@@ -31,7 +31,7 @@ const Login = () => {
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <AuthLogin isDemo={isLoggedIn} />
+          <AuthLogin />
         </Grid>
       </Grid>
     </AuthWrapper>
