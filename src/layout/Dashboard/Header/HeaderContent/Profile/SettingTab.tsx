@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
 // assets
-import { CommentOutlined, LockOutlined, QuestionCircleOutlined, UserOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { LockOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
 
 // ==============================|| HEADER PROFILE - SETTING TAB ||============================== //
 
@@ -33,18 +33,6 @@ const SettingTab = () => {
           <LockOutlined />
         </ListItemIcon>
         <ListItemText primary="Privacy Center" />
-      </ListItemButton>
-      <ListItemButton selected={selectedIndex === 3} onClick={(event: React.MouseEvent<HTMLDivElement>) => handleListItemClick(event, 3)}>
-        <ListItemIcon>
-          <CommentOutlined />
-        </ListItemIcon>
-        <ListItemText primary="Feedback" />
-      </ListItemButton>
-      <ListItemButton selected={selectedIndex === 4} onClick={(event: React.MouseEvent<HTMLDivElement>) => handleListItemClick(event, 4)}>
-        <ListItemIcon>
-          <UnorderedListOutlined />
-        </ListItemIcon>
-        <ListItemText primary="History" />
       </ListItemButton>
     </List>
   );

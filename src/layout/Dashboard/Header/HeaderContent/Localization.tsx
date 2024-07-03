@@ -10,7 +10,7 @@ import Transitions from 'components/@extended/Transitions';
 import useConfig from 'hooks/useConfig';
 
 // assets
-import { TranslationOutlined } from '@ant-design/icons';
+import { GlobalOutlined } from '@ant-design/icons';
 import { I18n, ThemeMode } from 'types/config';
 
 // ==============================|| HEADER CONTENT - LOCALIZATION ||============================== //
@@ -52,7 +52,7 @@ const Localization = () => {
         aria-haspopup="true"
         onClick={handleToggle}
       >
-        <TranslationOutlined />
+        <GlobalOutlined />
       </IconButton>
       <Popper
         placement={matchesXs ? 'bottom-start' : 'bottom'}
