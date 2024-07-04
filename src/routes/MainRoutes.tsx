@@ -1,13 +1,10 @@
 import { lazy } from 'react';
 
 // project import
-import ErrorBoundary from './ErrorBoundary';
 import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 import PagesLayout from 'layout/Pages';
 import SimpleLayout from 'layout/Simple';
-
-import { loader as productsLoader, productLoader } from 'api/products';
 
 // types
 import { SimpleLayoutType } from 'types/config';
@@ -21,42 +18,12 @@ const WidgetStatistics = Loadable(lazy(() => import('pages/widget/statistics')))
 const WidgetData = Loadable(lazy(() => import('pages/widget/data')));
 const WidgetChart = Loadable(lazy(() => import('pages/widget/chart')));
 
-// render - applications
-const AppChat = Loadable(lazy(() => import('pages/apps/chat')));
-const AppCalendar = Loadable(lazy(() => import('pages/apps/calendar')));
-
-const AppKanban = Loadable(lazy(() => import('pages/apps/kanban')));
-const AppKanbanBacklogs = Loadable(lazy(() => import('sections/apps/kanban/Backlogs')));
-const AppKanbanBoard = Loadable(lazy(() => import('sections/apps/kanban/Board')));
-
-const AppCustomerList = Loadable(lazy(() => import('pages/apps/customer/list')));
-const AppCustomerCard = Loadable(lazy(() => import('pages/apps/customer/card')));
-
-const AppInvoiceCreate = Loadable(lazy(() => import('pages/apps/invoice/create')));
-const AppInvoiceDashboard = Loadable(lazy(() => import('pages/apps/invoice/dashboard')));
-const AppInvoiceList = Loadable(lazy(() => import('pages/apps/invoice/list')));
-const AppInvoiceDetails = Loadable(lazy(() => import('pages/apps/invoice/details')));
-const AppInvoiceEdit = Loadable(lazy(() => import('pages/apps/invoice/edit')));
-
-const UserProfile = Loadable(lazy(() => import('pages/apps/profiles/user')));
-const UserTabPersonal = Loadable(lazy(() => import('sections/apps/profiles/user/TabPersonal')));
-const UserTabPayment = Loadable(lazy(() => import('sections/apps/profiles/user/TabPayment')));
-const UserTabPassword = Loadable(lazy(() => import('sections/apps/profiles/user/TabPassword')));
-const UserTabSettings = Loadable(lazy(() => import('sections/apps/profiles/user/TabSettings')));
-
-const AccountProfile = Loadable(lazy(() => import('pages/apps/profiles/account')));
-const AccountTabProfile = Loadable(lazy(() => import('sections/apps/profiles/account/TabProfile')));
+const AccountProfile = Loadable(lazy(() => import('pages/account')));
 const AccountTabPersonal = Loadable(lazy(() => import('sections/apps/profiles/account/TabPersonal')));
-const AccountTabAccount = Loadable(lazy(() => import('sections/apps/profiles/account/TabAccount')));
+const AccountTabAccount = Loadable(lazy(() => import('sections/account/TabAccount')));
 const AccountTabPassword = Loadable(lazy(() => import('sections/apps/profiles/account/TabPassword')));
 const AccountTabRole = Loadable(lazy(() => import('sections/apps/profiles/account/TabRole')));
 const AccountTabSettings = Loadable(lazy(() => import('sections/apps/profiles/account/TabSettings')));
-
-const AppECommProducts = Loadable(lazy(() => import('pages/apps/e-commerce/products')));
-const AppECommProductDetails = Loadable(lazy(() => import('pages/apps/e-commerce/product-details')));
-const AppECommProductList = Loadable(lazy(() => import('pages/apps/e-commerce/products-list')));
-const AppECommCheckout = Loadable(lazy(() => import('pages/apps/e-commerce/checkout')));
-const AppECommAddProduct = Loadable(lazy(() => import('pages/apps/e-commerce/add-product')));
 
 // render - forms & tables
 const FormsValidation = Loadable(lazy(() => import('pages/forms/validation')));
@@ -163,155 +130,32 @@ const MainRoutes = {
           ]
         },
         {
-          path: 'apps',
+          path: 'account',
+          element: <AccountProfile />,
           children: [
             {
-              path: 'chat',
-              element: <AppChat />
+              path: 'settings',
+              element: <AccountTabAccount />
             },
             {
-              path: 'calendar',
-              element: <AppCalendar />
+              path: 'personal',
+              element: <AccountTabPersonal />
             },
             {
-              path: 'kanban',
-              element: <AppKanban />,
-              children: [
-                {
-                  path: 'backlogs',
-                  element: <AppKanbanBacklogs />
-                },
-                {
-                  path: 'board',
-                  element: <AppKanbanBoard />
-                }
-              ]
+              path: 'my-account',
+              element: <AccountTabAccount />
             },
             {
-              path: 'customer',
-              children: [
-                {
-                  path: 'customer-list',
-                  element: <AppCustomerList />
-                },
-                {
-                  path: 'customer-card',
-                  element: <AppCustomerCard />
-                }
-              ]
+              path: 'password',
+              element: <AccountTabPassword />
             },
             {
-              path: 'invoice',
-              children: [
-                {
-                  path: 'dashboard',
-                  element: <AppInvoiceDashboard />
-                },
-                {
-                  path: 'create',
-                  element: <AppInvoiceCreate />
-                },
-                {
-                  path: 'details/:id',
-                  element: <AppInvoiceDetails />
-                },
-                {
-                  path: 'edit/:id',
-                  element: <AppInvoiceEdit />
-                },
-                {
-                  path: 'list',
-                  element: <AppInvoiceList />
-                }
-              ]
+              path: 'role',
+              element: <AccountTabRole />
             },
             {
-              path: 'profiles',
-              children: [
-                {
-                  path: 'account',
-                  element: <AccountProfile />,
-                  children: [
-                    {
-                      path: 'basic',
-                      element: <AccountTabProfile />
-                    },
-                    {
-                      path: 'personal',
-                      element: <AccountTabPersonal />
-                    },
-                    {
-                      path: 'my-account',
-                      element: <AccountTabAccount />
-                    },
-                    {
-                      path: 'password',
-                      element: <AccountTabPassword />
-                    },
-                    {
-                      path: 'role',
-                      element: <AccountTabRole />
-                    },
-                    {
-                      path: 'settings',
-                      element: <AccountTabSettings />
-                    }
-                  ]
-                },
-                {
-                  path: 'user',
-                  element: <UserProfile />,
-                  children: [
-                    {
-                      path: 'personal',
-                      element: <UserTabPersonal />
-                    },
-                    {
-                      path: 'payment',
-                      element: <UserTabPayment />
-                    },
-                    {
-                      path: 'password',
-                      element: <UserTabPassword />
-                    },
-                    {
-                      path: 'settings',
-                      element: <UserTabSettings />
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              path: 'e-commerce',
-              children: [
-                {
-                  path: 'products',
-                  element: <AppECommProducts />,
-                  loader: productsLoader,
-                  errorElement: <ErrorBoundary />
-                },
-                {
-                  path: 'product-details/:id',
-                  element: <AppECommProductDetails />,
-                  loader: productLoader,
-                  errorElement: <ErrorBoundary />
-                },
-                {
-                  path: 'product-list',
-                  element: <AppECommProductList />,
-                  loader: productsLoader,
-                  errorElement: <ErrorBoundary />
-                },
-                {
-                  path: 'add-new-product',
-                  element: <AppECommAddProduct />
-                },
-                {
-                  path: 'checkout',
-                  element: <AppECommCheckout />
-                }
-              ]
+              path: 'settings',
+              element: <AccountTabSettings />
             }
           ]
         },

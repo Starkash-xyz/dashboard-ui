@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 // material-ui
 import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
@@ -13,20 +11,15 @@ interface Props {
 }
 
 const ProfileTab = ({ handleLogout }: Props) => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const handleListItemClick = (event: React.MouseEvent<HTMLDivElement>, index: number) => {
-    setSelectedIndex(index);
-  };
-
   return (
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
-      <ListItemButton selected={selectedIndex === 0} onClick={(event: React.MouseEvent<HTMLDivElement>) => handleListItemClick(event, 0)}>
+      <ListItemButton href="/account">
         <ListItemIcon>
           <SettingOutlined />
         </ListItemIcon>
         <ListItemText primary="Account Settings" />
       </ListItemButton>
-      <ListItemButton selected={selectedIndex === 1} onClick={handleLogout}>
+      <ListItemButton onClick={handleLogout}>
         <ListItemIcon>
           <LogoutOutlined />
         </ListItemIcon>
