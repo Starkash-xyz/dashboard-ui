@@ -19,11 +19,10 @@ const WidgetData = Loadable(lazy(() => import('pages/widget/data')));
 const WidgetChart = Loadable(lazy(() => import('pages/widget/chart')));
 
 const AccountProfile = Loadable(lazy(() => import('pages/account')));
-const AccountTabPersonal = Loadable(lazy(() => import('sections/apps/profiles/account/TabPersonal')));
 const AccountTabAccount = Loadable(lazy(() => import('sections/account/TabAccount')));
-const AccountTabPassword = Loadable(lazy(() => import('sections/apps/profiles/account/TabPassword')));
-const AccountTabRole = Loadable(lazy(() => import('sections/apps/profiles/account/TabRole')));
-const AccountTabSettings = Loadable(lazy(() => import('sections/apps/profiles/account/TabSettings')));
+const AccountTabPassword = Loadable(lazy(() => import('sections/account/TabPassword')));
+const AccountTab2FA = Loadable(lazy(() => import('sections/account/Tab2FA')));
+const AccountTabPersonal = Loadable(lazy(() => import('sections/account/TabNotifications')));
 
 // render - forms & tables
 const FormsValidation = Loadable(lazy(() => import('pages/forms/validation')));
@@ -138,24 +137,16 @@ const MainRoutes = {
               element: <AccountTabAccount />
             },
             {
-              path: 'personal',
-              element: <AccountTabPersonal />
-            },
-            {
-              path: 'my-account',
-              element: <AccountTabAccount />
-            },
-            {
               path: 'password',
               element: <AccountTabPassword />
             },
             {
-              path: 'role',
-              element: <AccountTabRole />
+              path: '2fa',
+              element: <AccountTab2FA />
             },
             {
-              path: 'settings',
-              element: <AccountTabSettings />
+              path: 'notifications',
+              element: <AccountTabPersonal />
             }
           ]
         },

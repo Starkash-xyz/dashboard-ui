@@ -3,16 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 
 // material-ui
 import { styled, useTheme, Theme } from '@mui/material/styles';
-import { Box, IconButton, IconButtonProps, List, ListItem, ListItemAvatar, ListItemText, Menu, MenuItem } from '@mui/material';
+import { Box, IconButton, IconButtonProps, List, ListItem, Menu, MenuItem } from '@mui/material';
 
 // project import
-import Avatar from 'components/@extended/Avatar';
 import useAuth from 'hooks/useAuth';
 import { useGetMenuMaster } from 'api/menu';
 
 // assets
-import { RightOutlined } from '@ant-design/icons';
-import avatar1 from 'assets/images/users/avatar-1.png';
+import { RightOutlined, UserOutlined } from '@ant-design/icons';
 
 interface ExpandMoreProps extends IconButtonProps {
   theme: Theme;
@@ -45,7 +43,7 @@ const NavUser = () => {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
-  const { logout, user } = useAuth();
+  const { logout } = useAuth();
   const handleLogout = async () => {
     try {
       await logout();
@@ -91,10 +89,8 @@ const NavUser = () => {
           }
           sx={{ '& .MuiListItemSecondaryAction-root': { right: !drawerOpen ? -20 : -16 } }}
         >
-          <ListItemAvatar>
-            <Avatar alt="Avatar" src={avatar1} sx={{ ...(drawerOpen && { width: 46, height: 46 }) }} />
-          </ListItemAvatar>
-          <ListItemText primary={user?.name} secondary="UI/UX Designer" />
+          <UserOutlined />
+          <p>&nbsp;Account</p>
         </ListItem>
       </List>
       <Menu
@@ -114,13 +110,10 @@ const NavUser = () => {
           horizontal: 'right'
         }}
       >
+        <MenuItem component={Link} to="/account/settings" onClick={handleClose}>
+          Account Setings
+        </MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        <MenuItem component={Link} to="/apps/profiles/user/personal" onClick={handleClose}>
-          Profile
-        </MenuItem>
-        <MenuItem component={Link} to="/apps/profiles/account/basic" onClick={handleClose}>
-          My account
-        </MenuItem>
       </Menu>
     </Box>
   );
