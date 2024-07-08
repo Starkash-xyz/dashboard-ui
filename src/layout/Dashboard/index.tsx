@@ -11,7 +11,6 @@ import Header from './Header';
 import Footer from './Footer';
 import HorizontalBar from './Drawer/HorizontalBar';
 import Loader from 'components/Loader';
-import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import AuthGuard from 'utils/route-guard/AuthGuard';
 
 import useConfig from 'hooks/useConfig';
@@ -60,7 +59,6 @@ const DashboardLayout = () => {
               flexDirection: 'column'
             }}
           >
-            <Breadcrumbs />
             <Outlet />
             <Footer />
           </Container>

@@ -110,7 +110,7 @@ const NavUser = () => {
           horizontal: 'right'
         }}
       >
-        <MenuItem component={Link} to="/account/settings" onClick={handleClose}>
+        <MenuItem component={Link} to="/account" onClick={handleClose}>
           Account Setings
         </MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>

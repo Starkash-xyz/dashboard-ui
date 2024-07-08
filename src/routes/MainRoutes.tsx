@@ -7,7 +7,6 @@ import PagesLayout from 'layout/Pages';
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
-const DashboardAnalytics = Loadable(lazy(() => import('pages/dashboard/analytics')));
 
 const AccountProfile = Loadable(lazy(() => import('pages/account')));
 const AccountTabAccount = Loadable(lazy(() => import('sections/account/TabAccount')));
@@ -37,12 +36,12 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'default',
+              path: 'overview',
               element: <DashboardDefault />
             },
             {
-              path: 'analytics',
-              element: <DashboardAnalytics />
+              path: 'settings',
+              element: <DashboardDefault />
             }
           ]
         },
