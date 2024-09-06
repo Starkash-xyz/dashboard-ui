@@ -20,7 +20,6 @@ const MaintenanceUnderConstruction = Loadable(lazy(() => import('pages/maintenan
 const MaintenanceComingSoon = Loadable(lazy(() => import('pages/maintenance/coming-soon')));
 
 // render - sample page
-const SamplePage = Loadable(lazy(() => import('pages/extra-pages/sample-page')));
 const PricingPage = Loadable(lazy(() => import('pages/extra-pages/pricing')));
 
 // ==============================|| MAIN ROUTING ||============================== //
@@ -66,10 +65,6 @@ const MainRoutes = {
               element: <AccountTabPersonal />
             }
           ]
-        },
-        {
-          path: 'sample-page',
-          element: <SamplePage />
         },
         {
           path: 'pricing',
