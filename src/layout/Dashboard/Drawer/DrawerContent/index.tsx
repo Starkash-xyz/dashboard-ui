@@ -2,7 +2,6 @@
 import NavUser from './NavUser';
 import Navigation from './Navigation';
 import SimpleBar from 'components/third-party/SimpleBar';
-import NavStores from './NavStores';
 
 // ==============================|| DRAWER CONTENT ||============================== //
 
@@ -17,7 +16,6 @@ const DrawerContent = () => {
           }
         }}
       >
-        <NavStores />
         <Navigation />
       </SimpleBar>
       <NavUser />
