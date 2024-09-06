@@ -19,13 +19,13 @@ const icons = {
 
 const dashboard: NavItemType = {
   id: 'group-dashboard-loading',
-  title: <FormattedMessage id="dashboard" />,
+  title: '',
   type: 'group',
   icon: icons.dashboard,
   children: [
     {
-      id: 'dashboard',
-      title: <FormattedMessage id="dashboard" />,
+      id: 'overview',
+      title: <FormattedMessage id="overview" />,
       type: 'item',
       icon: icons.dashboard,
       url: '/dashboard/overview'
