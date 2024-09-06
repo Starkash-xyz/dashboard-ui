@@ -1,5 +1,4 @@
 // material-ui
-import { useTheme } from '@mui/material/styles';
 
 /**
  * if you want to use image instead of <svg> uncomment following.
@@ -13,8 +12,6 @@ import { useTheme } from '@mui/material/styles';
 // ==============================|| LOGO ICON SVG ||============================== //
 
 const LogoIcon = () => {
-  const theme = useTheme();
-
   return (
     /**
      * if you want to use image instead of svg uncomment following, and comment out <svg> element.
@@ -22,31 +19,44 @@ const LogoIcon = () => {
      * <img src={theme.palette.mode === ThemeMode.DARK ? logoIconDark : logoIcon} alt="Mantis" width="100" />
      *
      */
-    <svg width="129" height="129" viewBox="0 0 129 129" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="129" height="203" viewBox="0 0 129 203" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
-        d="M7.27577 57.2242L17.5616 46.9384L17.5724 46.9276H36.9234L29.2238 54.6273L27.2358 56.6152L19.3511 64.5L20.3276 65.4792L64.5 109.649L109.649 64.5L101.761 56.6152L101.206 56.0572L92.0766 46.9276H111.428L111.438 46.9384L119.5 55.0002L129 64.5L64.5 129L0 64.5L7.27577 57.2242ZM64.5 0L101.77 37.2695H82.4185L64.5 19.3511L46.5816 37.2695H27.2305L64.5 0Z"
-        fill={theme.palette.primary.dark}
+        d="M1.45806e-05 136.322C1.45806e-05 144.968 1.66836 153.528 4.90978 161.516C8.15121 169.503 12.9022 176.76 18.8916 182.874C24.881 188.987 31.9914 193.836 39.8169 197.145C47.6424 200.453 56.0297 202.156 64.5 202.156C72.9703 202.156 81.3576 200.453 89.1831 197.145C97.0086 193.836 104.119 188.987 110.108 182.874C116.098 176.76 120.849 169.503 124.09 161.516C127.332 153.528 129 144.968 129 136.322H99.975C99.975 141.077 99.0574 145.786 97.2746 150.179C95.4918 154.572 92.8788 158.563 89.5846 161.925C86.2905 165.288 82.3797 167.955 78.0757 169.774C73.7717 171.594 69.1587 172.531 64.5 172.531C59.8414 172.531 55.2283 171.594 50.9243 169.774C46.6203 167.955 42.7096 165.288 39.4154 161.925C36.1212 158.563 33.5082 154.572 31.7254 150.179C29.9426 145.786 29.025 141.077 29.025 136.322H1.45806e-05Z"
+        fill="url(#paint0_linear_4240_1036)"
       />
       <path
-        d="M19.3509 64.5L27.2357 56.6152L29.2236 54.6273L21.5267 46.9276H17.5722L17.5615 46.9384L7.27561 57.2242L17.1483 67.0487L19.3509 64.5Z"
-        fill="url(#paint0_linear)"
+        d="M99.975 101.887C116.005 101.887 129 114.92 129 130.997V136.466H99.975L99.975 101.887Z"
+        fill="url(#paint1_linear_4240_1036)"
       />
       <path
-        d="M101.762 56.6152L109.649 64.5L108.868 65.2807L108.871 65.2834L119.5 55.0002L111.438 46.9384L111.428 46.9276H110.644L101.206 56.0572L101.762 56.6152Z"
-        fill="url(#paint1_linear)"
+        d="M64.424 66.3071C64.424 66.3071 65.7216 81.2307 75.2826 91.3549C84.8435 101.479 99.823 101.773 99.823 101.773C99.823 101.773 84.8435 103.717 75.2826 112.856C65.7216 121.995 64.424 137.239 64.424 137.239C64.424 137.239 63.3477 122.435 53.7826 112.856C44.2175 103.277 29.025 101.773 29.025 101.773C29.025 101.773 45.0807 100.934 53.7826 91.3549C62.4845 81.7759 64.424 66.3071 64.424 66.3071Z"
+        fill="url(#paint2_linear_4240_1036)"
       />
+      <path d="M0 65.612H29.025L29.025 101.521C12.9949 101.521 0 88.4881 0 72.4108L0 65.612Z" fill="url(#paint3_linear_4240_1036)" />
       <path
-        d="M17.5508 46.9276L17.5615 46.9384L27.2357 56.6152L64.4999 93.8767L111.449 46.9276H17.5508Z"
-        fill={theme.palette.primary.main}
+        d="M129 65.8336C129 57.1883 127.332 48.6275 124.09 40.6402C120.849 32.6529 116.098 25.3954 110.108 19.2822C104.119 13.169 97.0086 8.31974 89.1831 5.01129C81.3576 1.70284 72.9703 -3.77902e-07 64.5 0C56.0297 3.77902e-07 47.6424 1.70284 39.8169 5.01129C31.9914 8.31974 24.881 13.169 18.8916 19.2822C12.9022 25.3955 8.1512 32.6529 4.90977 40.6402C1.66834 48.6275 -7.40493e-07 57.1883 0 65.8337L29.025 65.8336C29.025 61.0787 29.9426 56.3703 31.7254 51.9773C33.5082 47.5842 36.1212 43.5926 39.4154 40.2304C42.7095 36.8681 46.6203 34.201 50.9243 32.3814C55.2283 30.5617 59.8413 29.6251 64.5 29.6251C69.1586 29.6251 73.7717 30.5617 78.0757 32.3814C82.3797 34.201 86.2904 36.8681 89.5846 40.2304C92.8788 43.5926 95.4918 47.5842 97.2746 51.9773C99.0574 56.3703 99.975 61.0787 99.975 65.8336L129 65.8336Z"
+        fill="url(#paint4_linear_4240_1036)"
       />
       <defs>
-        <linearGradient id="paint0_linear" x1="25.0225" y1="49.3259" x2="11.4189" y2="62.9295" gradientUnits="userSpaceOnUse">
-          <stop stopColor={theme.palette.primary.darker} />
-          <stop offset="0.9637" stopColor={theme.palette.primary.dark} stopOpacity="0" />
+        <linearGradient id="paint0_linear_4240_1036" x1="26.3468" y1="9.66999" x2="134.725" y2="174.003" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#06D6A0" />
+          <stop offset="1" stop-color="#326DD4" />
         </linearGradient>
-        <linearGradient id="paint1_linear" x1="103.5" y1="49.5" x2="114.5" y2="62" gradientUnits="userSpaceOnUse">
-          <stop stopColor={theme.palette.primary.darker} />
-          <stop offset="1" stopColor={theme.palette.primary.dark} stopOpacity="0" />
+        <linearGradient id="paint1_linear_4240_1036" x1="26.3468" y1="9.66999" x2="134.725" y2="174.003" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#06D6A0" />
+          <stop offset="1" stop-color="#326DD4" />
+        </linearGradient>
+        <linearGradient id="paint2_linear_4240_1036" x1="26.3468" y1="9.66999" x2="134.725" y2="174.003" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#06D6A0" />
+          <stop offset="1" stop-color="#326DD4" />
+        </linearGradient>
+        <linearGradient id="paint3_linear_4240_1036" x1="26.3468" y1="9.66999" x2="134.725" y2="174.003" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#06D6A0" />
+          <stop offset="1" stop-color="#326DD4" />
+        </linearGradient>
+        <linearGradient id="paint4_linear_4240_1036" x1="26.3468" y1="9.66999" x2="134.725" y2="174.003" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#06D6A0" />
+          <stop offset="1" stop-color="#326DD4" />
         </linearGradient>
       </defs>
     </svg>
