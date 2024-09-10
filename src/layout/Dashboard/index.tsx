@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -18,6 +18,7 @@ import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
 // types
 import { MenuOrientation } from 'types/config';
+import Welcome from 'pages/dashboard/welcome';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
@@ -28,6 +29,7 @@ const DashboardLayout = () => {
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
   const { container, miniDrawer, menuOrientation } = useConfig();
+  const location = useLocation();
 
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downLG;
 
@@ -59,7 +61,7 @@ const DashboardLayout = () => {
               flexDirection: 'column'
             }}
           >
-            <Outlet />
+            {location.pathname !== '/dashboard/' ? <Outlet /> : <Welcome />}
             <Footer />
           </Container>
         </Box>

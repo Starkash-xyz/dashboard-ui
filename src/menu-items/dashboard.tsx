@@ -24,11 +24,11 @@ const dashboard: NavItemType = {
   icon: icons.dashboard,
   children: [
     {
-      id: 'overview',
-      title: <FormattedMessage id="overview" />,
+      id: 'dashboard',
+      title: <FormattedMessage id="dashboard" />,
       type: 'item',
       icon: icons.dashboard,
-      url: '/dashboard/overview'
+      url: '/dashboard/'
     },
     {
       id: 'settings',
