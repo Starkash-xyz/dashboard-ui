@@ -62,7 +62,7 @@ function Welcome() {
           </Button>
         </MainCard>
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <MainCard>
           <Stack>
             <Typography variant="h4">Our products</Typography>
@@ -71,14 +71,14 @@ function Welcome() {
               to the API documentation.
             </p>
           </Stack>
-          <IconDropdown items={dropdownItems} onSelect={handleSelect} defaultText="Select industry" width={275} />
+          <IconDropdown items={dropdownItems} onSelect={handleSelect} defaultText="Choose your industry" width={275} />
           {selectedOption && (
             <Typography variant="body1" sx={{ mt: 2 }}>
               Selected option: {selectedOption.label}
             </Typography>
           )}
         </MainCard>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }
