@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 // assets
 import { DashboardOutlined, LoadingOutlined, SettingOutlined } from '@ant-design/icons';
-
+import { RiToolsLine } from 'react-icons/ri';
 // type
 import { NavItemType } from 'types/menu';
 
@@ -13,12 +13,13 @@ import { NavItemType } from 'types/menu';
 
 const icons = {
   dashboard: DashboardOutlined,
+  paymentTools: RiToolsLine,
   settings: SettingOutlined,
   loading: LoadingOutlined
 };
 
 const dashboard: NavItemType = {
-  id: 'group-dashboard-loading',
+  id: 'group-dashboard',
   title: '',
   type: 'group',
   icon: icons.dashboard,
@@ -29,6 +30,32 @@ const dashboard: NavItemType = {
       type: 'item',
       icon: icons.dashboard,
       url: '/dashboard/'
+    },
+    {
+      id: 'Payment Tools',
+      title: <FormattedMessage id="payment-tools" />,
+      type: 'collapse',
+      icon: icons.paymentTools,
+      children: [
+        {
+          id: 'payment-link',
+          title: <FormattedMessage id="payment-link" />,
+          type: 'item',
+          url: '/dashboard/invoices'
+        },
+        {
+          id: 'donations',
+          title: <FormattedMessage id="donations" />,
+          type: 'item',
+          url: '/dashboard/donations'
+        },
+        {
+          id: 'subscriptions',
+          title: <FormattedMessage id="subscriptions" />,
+          type: 'item',
+          url: '/dashboard/subscriptions'
+        }
+      ]
     },
     {
       id: 'settings',

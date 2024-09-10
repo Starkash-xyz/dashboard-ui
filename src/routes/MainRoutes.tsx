@@ -37,6 +37,10 @@ const MainRoutes = {
             {
               path: 'settings',
               element: <DashboardDefault />
+            },
+            {
+              path: 'settings',
+              element: <DashboardDefault />
             }
           ]
         },

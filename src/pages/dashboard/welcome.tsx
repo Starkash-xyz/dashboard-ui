@@ -1,49 +1,49 @@
 import { Button, Grid, Stack, Typography } from '@mui/material';
-import IconDropdown, { DropdownItem } from 'components/IconDropdown';
-import CasinoIcon from '../../assets/images/icons/casino.svg';
-import AdultIcon from '../../assets/images/icons/adults-only.svg';
-import EcommerceIcon from '../../assets/images/icons/e-commerce.svg';
-import CharityIcon from '../../assets/images/icons/charity.svg';
-import GamingIcon from '../../assets/images/icons/gaming.svg';
+// import IconDropdown, { DropdownItem } from 'components/IconDropdown';
+// import CasinoIcon from '../../assets/images/icons/casino.svg';
+// import AdultIcon from '../../assets/images/icons/adults-only.svg';
+// import EcommerceIcon from '../../assets/images/icons/e-commerce.svg';
+// import CharityIcon from '../../assets/images/icons/charity.svg';
+// import GamingIcon from '../../assets/images/icons/gaming.svg';
 
 import MainCard from 'components/MainCard';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 function Welcome() {
-  const [selectedOption, setSelectedOption] = useState<DropdownItem | null>(null);
+  //   const [selectedOption, setSelectedOption] = useState<DropdownItem | null>(null);
 
-  const dropdownItems: DropdownItem[] = [
-    {
-      label: 'Casino',
-      onClick: () => console.log('Casino'),
-      icon: CasinoIcon
-    },
-    {
-      label: 'Adult',
-      onClick: () => console.log('Adult clicked'),
-      icon: AdultIcon
-    },
-    {
-      label: 'E-commerce',
-      onClick: () => console.log('E-commerce clicked'),
-      icon: EcommerceIcon
-    },
-    {
-      label: 'Charity',
-      onClick: () => console.log('Charity clicked'),
-      icon: CharityIcon
-    },
-    {
-      label: 'Gaming',
-      onClick: () => console.log('Gaming clicked'),
-      icon: GamingIcon
-    }
-  ];
+  //   const dropdownItems: DropdownItem[] = [
+  //     {
+  //       label: 'Casino',
+  //       onClick: () => console.log('Casino'),
+  //       icon: CasinoIcon
+  //     },
+  //     {
+  //       label: 'Adult',
+  //       onClick: () => console.log('Adult clicked'),
+  //       icon: AdultIcon
+  //     },
+  //     {
+  //       label: 'E-commerce',
+  //       onClick: () => console.log('E-commerce clicked'),
+  //       icon: EcommerceIcon
+  //     },
+  //     {
+  //       label: 'Charity',
+  //       onClick: () => console.log('Charity clicked'),
+  //       icon: CharityIcon
+  //     },
+  //     {
+  //       label: 'Gaming',
+  //       onClick: () => console.log('Gaming clicked'),
+  //       icon: GamingIcon
+  //     }
+  //   ];
 
-  const handleSelect = (item: DropdownItem) => {
-    setSelectedOption(item);
-    item.onClick();
-  };
+  //   const handleSelect = (item: DropdownItem) => {
+  //     setSelectedOption(item);
+  //     item.onClick();
+  //   };
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
