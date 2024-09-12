@@ -15,7 +15,12 @@ import {
   Stack,
   Divider,
   useMediaQuery,
-  Button
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from '@mui/material';
 
 // third-party
@@ -54,7 +59,6 @@ import ScrollX from 'components/ScrollX';
 import {
   DebouncedInput,
   EmptyTable,
-  Filter,
   HeaderSort,
   RowSelection,
   TablePagination,
@@ -188,6 +192,8 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
     }
   });
 
+  const [openPaymentLinkModal, setOpenPaymenLinkModal] = useState(false);
+
   useEffect(() => setColumnVisibility({ id: false, role: false, contact: false, country: false, progress: false }), []);
 
   const backColor = alpha(theme.palette.primary.lighter, 0.1);
@@ -218,6 +224,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
             sx={{
               marginBottom: '32px'
             }}
+            onClick={() => setOpenPaymenLinkModal(true)}
           >
             Create payment link
           </Button>
@@ -383,6 +390,27 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
           />
         </Box>
       </ScrollX>
+
+      <Dialog open={openPaymentLinkModal} onClose={() => setOpenPaymenLinkModal(false)}>
+        <Box sx={{ p: 1, py: 1.5 }}>
+          <DialogTitle variant="h2" sx={{ fontSize: '24px' }}>
+            Create payment link
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button color="error" onClick={() => setOpenPaymenLinkModal(false)}>
+              Disagree
+            </Button>
+            <Button variant="contained" onClick={() => setOpenPaymenLinkModal(false)} autoFocus>
+              Agree
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
     </MainCard>
   );
 }
