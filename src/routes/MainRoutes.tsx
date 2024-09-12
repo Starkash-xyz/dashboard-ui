@@ -19,6 +19,8 @@ const MaintenanceError500 = Loadable(lazy(() => import('pages/maintenance/500'))
 const MaintenanceUnderConstruction = Loadable(lazy(() => import('pages/maintenance/under-construction')));
 const MaintenanceComingSoon = Loadable(lazy(() => import('pages/maintenance/coming-soon')));
 
+const PaymentLink = Loadable(lazy(() => import('pages/dashboard/payment-link')));
+
 // render - sample page
 const PricingPage = Loadable(lazy(() => import('pages/extra-pages/pricing')));
 
@@ -35,8 +37,8 @@ const MainRoutes = {
           path: 'dashboard',
           children: [
             {
-              path: 'settings',
-              element: <DashboardDefault />
+              path: 'invoices',
+              element: <PaymentLink />
             },
             {
               path: 'settings',

@@ -43,23 +43,10 @@ export type TableDataApiResponse = {
 
 export type TableDataProps = {
   id: number;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  fatherName: string;
-  email: string;
-  age: number;
-  gender: Gender;
-  role: string;
-  visits: number;
-  progress: number;
-  status: string;
-  orderStatus: string;
-  contact: string;
-  country: string;
-  address: string;
-  about: string;
-  avatar: number;
-  skills: string[];
-  time: string[];
+  paymentId: string;
+  orderId: string;
+  price: string;
+  currency: string;
+  invoiceUrl: string;
+  createdAt: number;
 };
