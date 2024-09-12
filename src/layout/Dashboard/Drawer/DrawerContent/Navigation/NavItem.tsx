@@ -50,7 +50,7 @@ const NavItem = ({ item, level, isParents = false }: Props) => {
   );
 
   const { pathname } = useLocation();
-  const isSelected = !!matchPath({ path: item?.link ? item.link : item.url!, end: false }, pathname);
+  const isSelected = !!matchPath({ path: item?.link ? item.link : item.url!, end: true }, pathname);
 
   const textColor = theme.palette.mode === ThemeMode.DARK ? 'grey.400' : 'text.primary';
   const iconSelectedColor = theme.palette.mode === ThemeMode.DARK && drawerOpen ? 'text.primary' : 'primary.main';
