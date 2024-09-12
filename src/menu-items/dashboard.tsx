@@ -42,19 +42,19 @@ const dashboard: NavItemType = {
           title: <FormattedMessage id="payment-link" />,
           type: 'item',
           url: '/dashboard/invoices'
-        },
-        {
-          id: 'donations',
-          title: <FormattedMessage id="donations" />,
-          type: 'item',
-          url: '/dashboard/donations'
-        },
-        {
-          id: 'subscriptions',
-          title: <FormattedMessage id="subscriptions" />,
-          type: 'item',
-          url: '/dashboard/subscriptions'
         }
+        // {
+        //   id: 'donations',
+        //   title: <FormattedMessage id="donations" />,
+        //   type: 'item',
+        //   url: '/dashboard/donations'
+        // },
+        // {
+        //   id: 'subscriptions',
+        //   title: <FormattedMessage id="subscriptions" />,
+        //   type: 'item',
+        //   url: '/dashboard/subscriptions'
+        // }
       ]
     },
     {
