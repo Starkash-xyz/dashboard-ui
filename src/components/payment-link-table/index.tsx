@@ -204,8 +204,6 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
       })
   );
 
-  console.log(table.getVisibleLeafColumns());
-
   return (
     <MainCard content={false}>
       <Stack
