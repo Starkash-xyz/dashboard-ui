@@ -25,4 +25,22 @@ const config: DefaultConfigProps = {
   themeDirection: ThemeDirection.LTR
 };
 
+export interface Coin {
+  name: string;
+  symbol: string;
+  network: string;
+}
+
+export const popularCoins: Coin[] = [
+  { name: 'STRK', symbol: 'STRK', network: 'Starknet' },
+  { name: 'Ethereum', symbol: 'ETH', network: 'Starknet' },
+  { name: 'USDC', symbol: 'USDC', network: 'Starknet' }
+];
+
+export const stableCoins: Coin[] = [
+  { name: 'DAI', symbol: 'DAI', network: 'Starknet' },
+  { name: 'LUSD', symbol: 'LUSD', network: 'Starknet' },
+  { name: 'Tether USD', symbol: 'USDT', network: 'Starknet' }
+];
+
 export default config;

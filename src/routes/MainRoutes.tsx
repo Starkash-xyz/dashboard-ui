@@ -8,6 +8,8 @@ import PagesLayout from 'layout/Pages';
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
 
+const TokensSettings = Loadable(lazy(() => import('pages/settings/tokens')));
+
 const AccountProfile = Loadable(lazy(() => import('pages/account')));
 const AccountTabAccount = Loadable(lazy(() => import('sections/account/TabAccount')));
 const AccountTabPassword = Loadable(lazy(() => import('sections/account/TabPassword')));
@@ -35,14 +37,18 @@ const MainRoutes = {
       children: [
         {
           path: 'dashboard',
+          children: []
+        },
+        {
+          path: 'invoices',
+          element: <PaymentLink />
+        },
+        {
+          path: 'settings',
           children: [
             {
-              path: 'invoices',
-              element: <PaymentLink />
-            },
-            {
-              path: 'settings',
-              element: <DashboardDefault />
+              path: 'tokens',
+              element: <TokensSettings />
             }
           ]
         },

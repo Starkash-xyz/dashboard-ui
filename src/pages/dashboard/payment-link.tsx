@@ -1,6 +1,6 @@
 import { Grid, Stack, Typography } from '@mui/material';
 import MainCard from 'components/MainCard';
-import PaymentLinkTable from 'components/payment-link-table';
+import PaymentLinkTable from './components/payment-link-table';
 import { MdInfo } from 'react-icons/md';
 
 function PaymentLink() {
@@ -38,6 +38,7 @@ function PaymentLink() {
             </ul>
           </Stack>
         </MainCard>
+
         <PaymentLinkTable />
       </Grid>
     </div>

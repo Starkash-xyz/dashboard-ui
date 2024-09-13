@@ -41,7 +41,7 @@ const dashboard: NavItemType = {
           id: 'payment-link',
           title: <FormattedMessage id="payment-link" />,
           type: 'item',
-          url: '/dashboard/invoices'
+          url: '/invoices'
         }
         // {
         //   id: 'donations',
@@ -60,9 +60,16 @@ const dashboard: NavItemType = {
     {
       id: 'settings',
       title: <FormattedMessage id="settings" />,
-      type: 'item',
+      type: 'collapse',
       icon: icons.settings,
-      url: '/dashboard/settings'
+      children: [
+        {
+          id: 'tokens',
+          title: <FormattedMessage id="tokens" />,
+          type: 'item',
+          url: '/settings/tokens'
+        }
+      ]
     }
   ]
 };
