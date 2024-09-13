@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useReducer } from 'react';
+import { collection, addDoc, getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 // third-party
 import firebase from 'firebase/compat/app';
@@ -38,23 +39,42 @@ const FirebaseContext = createContext<FirebaseContextType | null>(null);
 
 export const FirebaseProvider = ({ children }: { children: React.ReactElement }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const db = getFirestore(firebase.apps[0]);
+
+  async function saveUser(user: any) {
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          email: user.email,
+          name: user.displayName || ''
+        });
+
+        console.log('User saved with ID: ', user.uid);
+      }
+    } catch (error) {
+      console.error('Error adding document: ', error);
+    }
+  }
 
   useEffect(
     () =>
-      firebase.auth().onAuthStateChanged((user: any) => {
+      firebase.auth().onAuthStateChanged(async (user: any) => {
         if (user) {
           dispatch({
             type: LOGIN,
             payload: {
               isLoggedIn: true,
               user: {
-                id: user.uid,
                 email: user.email!,
-                name: user.displayName || 'Stebin Ben',
-                role: 'UI/UX Designer'
+                name: user.displayName || ''
               }
             }
           });
+
+          await saveUser(user);
         } else {
           dispatch({
             type: LOGOUT
