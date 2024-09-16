@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useReducer } from 'react';
-import { collection, addDoc, getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 
 // third-party
 import firebase from 'firebase/compat/app';
@@ -39,7 +39,7 @@ const FirebaseContext = createContext<FirebaseContextType | null>(null);
 
 export const FirebaseProvider = ({ children }: { children: React.ReactElement }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
-  const db = getFirestore(firebase.apps[0]);
+  const db = getFirestore();
 
   async function saveUser(user: any) {
     try {
@@ -68,6 +68,7 @@ export const FirebaseProvider = ({ children }: { children: React.ReactElement })
             payload: {
               isLoggedIn: true,
               user: {
+                uid: user.uid!,
                 email: user.email!,
                 name: user.displayName || ''
               }
@@ -85,7 +86,8 @@ export const FirebaseProvider = ({ children }: { children: React.ReactElement })
     [dispatch]
   );
 
-  const firebaseEmailPasswordSignIn = (email: string, password: string) => firebase.auth().signInWithEmailAndPassword(email, password);
+  const firebaseEmailPasswordSignIn = (email: string, password: string) =>
+    firebase.auth().signInWithEmailAndPassword(email, password);
 
   const firebaseGoogleSignIn = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -102,7 +104,8 @@ export const FirebaseProvider = ({ children }: { children: React.ReactElement })
     return firebase.auth().signInWithPopup(provider);
   };
 
-  const firebaseRegister = async (email: string, password: string) => firebase.auth().createUserWithEmailAndPassword(email, password);
+  const firebaseRegister = async (email: string, password: string) =>
+    firebase.auth().createUserWithEmailAndPassword(email, password);
 
   const logout = () => firebase.auth().signOut();
 

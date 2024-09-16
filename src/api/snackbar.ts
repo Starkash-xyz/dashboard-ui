@@ -24,7 +24,7 @@ const initialState: SnackbarProps = {
   transition: 'Fade',
   close: false,
   actionButton: false,
-  maxStack: 3,
+  maxStack: 2,
   dense: false,
   iconVariant: 'usedefault'
 };

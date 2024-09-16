@@ -66,24 +66,24 @@ const LogoMain = ({ reverse, ...others }: { reverse?: boolean }) => {
         />
         <defs>
           <linearGradient id="paint0_linear_4240_1035" x1="3.23301" y1="1.24562" x2="16.4777" y2="21.3875" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#06D6A0" />
-            <stop offset="1" stop-color="#326DD4" />
+            <stop stopColor="#06D6A0" />
+            <stop offset="1" stopColor="#326DD4" />
           </linearGradient>
           <linearGradient id="paint1_linear_4240_1035" x1="3.23301" y1="1.24562" x2="16.4777" y2="21.3875" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#06D6A0" />
-            <stop offset="1" stop-color="#326DD4" />
+            <stop stopColor="#06D6A0" />
+            <stop offset="1" stopColor="#326DD4" />
           </linearGradient>
           <linearGradient id="paint2_linear_4240_1035" x1="3.23301" y1="1.24562" x2="16.4777" y2="21.3875" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#06D6A0" />
-            <stop offset="1" stop-color="#326DD4" />
+            <stop stopColor="#06D6A0" />
+            <stop offset="1" stopColor="#326DD4" />
           </linearGradient>
           <linearGradient id="paint3_linear_4240_1035" x1="3.23301" y1="1.24562" x2="16.4777" y2="21.3875" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#06D6A0" />
-            <stop offset="1" stop-color="#326DD4" />
+            <stop stopColor="#06D6A0" />
+            <stop offset="1" stopColor="#326DD4" />
           </linearGradient>
           <linearGradient id="paint4_linear_4240_1035" x1="3.23301" y1="1.24562" x2="16.4777" y2="21.3875" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#06D6A0" />
-            <stop offset="1" stop-color="#326DD4" />
+            <stop stopColor="#06D6A0" />
+            <stop offset="1" stopColor="#326DD4" />
           </linearGradient>
         </defs>
       </svg>

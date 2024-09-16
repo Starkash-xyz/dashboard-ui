@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Grid, Button, Typography, InputAdornment, Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { IoMdSearch } from 'react-icons/io';
-import { Coin, popularCoins, stableCoins } from 'config';
+import { Token } from 'config';
 import MainCard from 'components/MainCard';
+
+import { fetchUserSettings, saveUserSettings } from 'data/firebase';
+import { enqueueSnackbar } from 'notistack';
+import { getFirestore } from 'firebase/firestore';
+import useAuth from 'hooks/useAuth';
 
 const CustomButton = styled(Button)<{ selected?: boolean }>(({ theme, selected }) => ({
   display: 'flex',
@@ -41,39 +46,127 @@ const CustomButton = styled(Button)<{ selected?: boolean }>(({ theme, selected }
 }));
 
 const TokenSelector: React.FC = () => {
-  const [showPopularCoins, setShowPopularCoins] = useState<boolean>(true);
-  const [showStableCoins, setShowStableCoins] = useState<boolean>(true);
-  const [selectedCoins, setSelectedCoins] = useState<Record<string, boolean>>({});
+  const db = getFirestore();
+  const auth = useAuth();
 
-  const toggleCoinSelection = (coin: Coin) => {
-    setSelectedCoins((prev) => ({
-      ...prev,
-      [coin.symbol + coin.network]: !prev[coin.symbol + coin.network]
-    }));
+  const [selectedTokens, setSelectedTokens] = useState<Record<string, Token>>({});
+  const [allTokens, setAllTokens] = useState<Token[]>([]);
+
+  useEffect(() => {
+    const loadUserSettings = async () => {
+      try {
+        const userSettings = await fetchUserSettings(db, auth);
+        const selectedTokensMap: Record<string, Token> = {};
+
+        userSettings.tokens.forEach((token) => {
+          selectedTokensMap[token.address] = token;
+        });
+
+        setSelectedTokens(selectedTokensMap);
+        setAllTokens([...userSettings.tokens]);
+      } catch (error) {
+        console.error('Error loading user settings:', error);
+        enqueueSnackbar('Failed to load user settings.', { variant: 'error' });
+      }
+    };
+
+    loadUserSettings();
+  }, [auth, db]);
+
+  const toggleTokenSelection = async (token: Token) => {
+    try {
+      const updatedTokens = { ...selectedTokens };
+      const isSelected = updatedTokens[token.address].isSelected ?? false;
+
+      updatedTokens[token.address] = {
+        ...updatedTokens[token.address],
+        isSelected: !isSelected
+      };
+
+      setSelectedTokens(updatedTokens);
+
+      const selectedTokenList = Object.values(updatedTokens);
+      await saveUserSettings(db, auth, selectedTokenList);
+      enqueueSnackbar('User settings have been successfully saved.', {
+        variant: 'success',
+        anchorOrigin: { vertical: 'bottom', horizontal: 'right' }
+      });
+    } catch (error) {
+      console.error('Error saving user settings:', error);
+      enqueueSnackbar('Failed to save user settings.', {
+        variant: 'error',
+        anchorOrigin: { vertical: 'bottom', horizontal: 'right' }
+      });
+    }
   };
 
-  const CoinButton: React.FC<Coin> = ({ name, symbol, network }) => {
-    const isSelected = selectedCoins[symbol + network];
+  const handleToggleSwitch = async (category: string, isOn: boolean) => {
+    try {
+      const updatedTokens = { ...selectedTokens };
+      const categoryTokens = allTokens.filter((token) => token.category === category);
+
+      categoryTokens.forEach((token) => {
+        if (token.category === category) {
+          updatedTokens[token.address] = {
+            ...updatedTokens[token.address],
+            isSelected: isOn
+          };
+        }
+      });
+
+      setSelectedTokens(updatedTokens);
+
+      const selectedTokenList = Object.values(updatedTokens);
+      await saveUserSettings(db, auth, selectedTokenList);
+      enqueueSnackbar('User settings have been successfully saved.', {
+        variant: 'success',
+        anchorOrigin: { vertical: 'bottom', horizontal: 'right' }
+      });
+    } catch (error) {
+      console.error('Error saving user settings:', error);
+      enqueueSnackbar('Failed to save user settings.', {
+        variant: 'error',
+        anchorOrigin: { vertical: 'bottom', horizontal: 'right' }
+      });
+    }
+  };
+
+  const TokenButton = ({ token }: { token: Token }) => {
+    const isSelected = selectedTokens[token.address].isSelected;
     return (
-      <CustomButton selected={isSelected} onClick={() => toggleCoinSelection({ name, symbol, network })}>
+      <CustomButton selected={isSelected} onClick={() => toggleTokenSelection(token)}>
         <div className="icon">
           {isSelected && <div style={{ width: 24, height: 24, backgroundColor: '#ffffff', borderRadius: '50%' }} />}
         </div>
         <div className="text">
           <Typography variant="body1" component="span">
-            {symbol} <span className="network">{network}</span>
+            {token.symbol} <span className="network">{token.network}</span>
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {name}
+            {token.name}
           </Typography>
         </div>
       </CustomButton>
     );
   };
 
-  const sections = [
-    { title: 'Popular Coins', coins: popularCoins, show: showPopularCoins, setShow: setShowPopularCoins },
-    { title: 'Stable Coins', coins: stableCoins, show: showStableCoins, setShow: setShowStableCoins }
+  interface Section {
+    title: string;
+    tokens: Token[];
+    category: string;
+  }
+
+  const sections: Section[] = [
+    {
+      title: 'Popular Tokens',
+      tokens: allTokens.filter((t) => t.category === 'popularTokens'),
+      category: 'popularTokens'
+    },
+    {
+      title: 'Stable Tokens',
+      tokens: allTokens.filter((t) => t.category === 'stableTokens'),
+      category: 'stableTokens'
+    }
   ];
 
   return (
@@ -97,18 +190,23 @@ const TokenSelector: React.FC = () => {
         }}
       />
 
-      {sections.map(({ title, coins, show, setShow }, index) => (
+      {sections.map(({ title, tokens, category }, index) => (
         <div key={index} style={{ marginBottom: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
-            <Switch checked={show} onChange={(e) => setShow(e.target.checked)} />
+            <Switch
+              checked={Object.values(selectedTokens).some((token) => token.category === category && token.isSelected)}
+              onChange={(e) => {
+                handleToggleSwitch(category, e.target.checked);
+              }}
+            />
             <Typography variant="h6" style={{ flexGrow: 1 }}>
               {title}
             </Typography>
           </div>
           <Grid container spacing={2}>
-            {coins.map((coin, coinIndex) => (
+            {tokens.map((token, coinIndex) => (
               <Grid item xs={12} sm={6} md={4} key={coinIndex}>
-                <CoinButton {...coin} />
+                <TokenButton token={token} />
               </Grid>
             ))}
           </Grid>
