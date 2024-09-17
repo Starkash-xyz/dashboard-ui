@@ -2,6 +2,16 @@ import { doc, Firestore, getDoc, setDoc } from 'firebase/firestore';
 import { tokens, Token } from 'config';
 import { FirebaseContextType } from 'types/auth';
 
+function mergeTokensWithConfig(userTokens: Token[], defaultTokens: Token[]): Token[] {
+  return defaultTokens.map((defaultToken) => {
+    const userToken = userTokens.find(
+      (t) => t.address === defaultToken.address && t.network?.name === defaultToken.network?.name
+    );
+
+    return userToken ? { ...defaultToken, ...userToken } : defaultToken;
+  });
+}
+
 export const fetchUserSettings = async (
   db: Firestore,
   auth: FirebaseContextType
@@ -17,8 +27,12 @@ export const fetchUserSettings = async (
 
     if (userSettingsSnapshot.exists()) {
       const data = userSettingsSnapshot.data();
+      const mergedTokens = mergeTokensWithConfig(data.tokens || [], tokens);
+
+      await saveUserSettings(db, auth, mergedTokens);
+
       return {
-        tokens: data.tokens || []
+        tokens: mergedTokens
       };
     } else {
       await setDoc(userSettingsRef, { tokens });

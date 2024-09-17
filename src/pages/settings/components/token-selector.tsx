@@ -19,11 +19,9 @@ const CustomButton = styled(Button)<{ selected?: boolean }>(({ theme, selected }
   borderRadius: theme.shape.borderRadius,
   textAlign: 'left',
   width: '100%',
-  backgroundColor: selected ? theme.palette.action.selected : theme.palette.background.paper,
+  backgroundColor: theme.palette.background.paper,
+  '&:hover': { boxShadow: '0 2px 7px 0 #64acff80' },
   '& .icon': {
-    width: 32,
-    height: 32,
-    backgroundColor: theme.palette.grey[200],
     borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
@@ -34,14 +32,15 @@ const CustomButton = styled(Button)<{ selected?: boolean }>(({ theme, selected }
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    flexGrow: 1
+    flexGrow: 1,
+    color: selected ? '#000' : '#c6c6c6'
   },
   '& .network': {
-    fontSize: theme.typography.body2.fontSize,
-    backgroundColor: theme.palette.primary.light,
-    color: theme.palette.primary.main,
+    fontSize: '9px',
+    color: '#fff',
     padding: theme.spacing(0.5),
-    borderRadius: theme.shape.borderRadius
+    borderRadius: theme.shape.borderRadius,
+    textTransform: 'uppercase'
   }
 }));
 
@@ -136,13 +135,22 @@ const TokenSelector: React.FC = () => {
     return (
       <CustomButton selected={isSelected} onClick={() => toggleTokenSelection(token)}>
         <div className="icon">
-          {isSelected && <div style={{ width: 24, height: 24, backgroundColor: '#ffffff', borderRadius: '50%' }} />}
+          <img
+            src={token.logo}
+            alt={token.name}
+            style={{ width: 30, height: 30, borderRadius: '50%', filter: isSelected ? 'none' : 'grayscale(1)' }}
+          />
         </div>
         <div className="text">
-          <Typography variant="body1" component="span">
-            {token.symbol} <span className="network">{token.network}</span>
+          <Typography variant="body1" component="span" sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>{token.symbol} </span>
+            {token.network && (
+              <span className="network" style={{ backgroundColor: isSelected ? token.network.color : '#c6c6c6' }}>
+                {token.network.name}
+              </span>
+            )}
           </Typography>
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color={isSelected ? 'textSecondary' : '#c6c6c6'}>
             {token.name}
           </Typography>
         </div>
