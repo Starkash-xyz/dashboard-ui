@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Grid, Button, Typography, InputAdornment, Switch } from '@mui/material';
+import { TextField, Grid, Button, Typography, InputAdornment, Switch, CircularProgress, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { IoMdSearch } from 'react-icons/io';
 import { Token } from 'config';
@@ -50,11 +50,14 @@ const TokenSelector: React.FC = () => {
 
   const [selectedTokens, setSelectedTokens] = useState<Record<string, Token>>({});
   const [allTokens, setAllTokens] = useState<Token[]>([]);
+  const [filteredTokens, setFilteredTokens] = useState<Token[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadUserSettings = async () => {
       try {
+        setLoading(true);
         const userSettings = await fetchUserSettings(db, auth);
         const selectedTokensMap: Record<string, Token> = {};
 
@@ -64,9 +67,12 @@ const TokenSelector: React.FC = () => {
 
         setSelectedTokens(selectedTokensMap);
         setAllTokens([...userSettings.tokens]);
+        setFilteredTokens([...userSettings.tokens]);
       } catch (error) {
         console.error('Error loading user settings:', error);
         enqueueSnackbar('Failed to load user settings.', { variant: 'error' });
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -132,15 +138,15 @@ const TokenSelector: React.FC = () => {
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchKeyword(e.target.value);
-  };
+    const keyword = e.target.value.toLowerCase();
+    setSearchKeyword(keyword);
 
-  const filteredTokens = allTokens.filter((token: Token) => {
-    return (
-      token.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-      token.symbol.toLowerCase().includes(searchKeyword.toLowerCase())
-    );
-  });
+    const filteredTokens = allTokens.filter((token: Token) => {
+      return token.name.toLowerCase().includes(keyword) || token.symbol.toLowerCase().includes(keyword);
+    });
+
+    setFilteredTokens(filteredTokens);
+  };
 
   const TokenButton = ({ token }: { token: Token }) => {
     const isSelected = selectedTokens[token.address].isSelected;
@@ -212,38 +218,46 @@ const TokenSelector: React.FC = () => {
         }}
       />
 
-      {filteredTokens.length > 0 ? (
+      {loading ? (
+        <Box sx={{ marginTop: '10px' }}>
+          <CircularProgress size={20} />
+        </Box>
+      ) : (
         <>
-          {sections.map(
-            ({ title, tokens, category }, index) =>
-              tokens.length > 0 && (
-                <div key={index} style={{ marginBottom: 24 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
-                    <Switch
-                      checked={Object.values(selectedTokens).some(
-                        (token) => token.category === category && token.isSelected
-                      )}
-                      onChange={(e) => {
-                        handleToggleSwitch(category, e.target.checked);
-                      }}
-                    />
-                    <Typography variant="h6" style={{ flexGrow: 1 }}>
-                      {title}
-                    </Typography>
-                  </div>
-                  <Grid container spacing={2}>
-                    {tokens.map((token, coinIndex) => (
-                      <Grid item xs={12} sm={6} md={4} key={coinIndex}>
-                        <TokenButton token={token} />
+          {filteredTokens.length > 0 ? (
+            <>
+              {sections.map(
+                ({ title, tokens, category }, index) =>
+                  tokens.length > 0 && (
+                    <div key={index} style={{ marginBottom: 24 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                        <Switch
+                          checked={Object.values(selectedTokens).some(
+                            (token) => token.category === category && token.isSelected
+                          )}
+                          onChange={(e) => {
+                            handleToggleSwitch(category, e.target.checked);
+                          }}
+                        />
+                        <Typography variant="h6" style={{ flexGrow: 1 }}>
+                          {title}
+                        </Typography>
+                      </div>
+                      <Grid container spacing={2}>
+                        {tokens.map((token, coinIndex) => (
+                          <Grid item xs={12} sm={6} md={4} key={coinIndex}>
+                            <TokenButton token={token} />
+                          </Grid>
+                        ))}
                       </Grid>
-                    ))}
-                  </Grid>
-                </div>
-              )
+                    </div>
+                  )
+              )}
+            </>
+          ) : (
+            <p>No tokens found.</p>
           )}
         </>
-      ) : (
-        <p>No tokens found.</p>
       )}
     </MainCard>
   );

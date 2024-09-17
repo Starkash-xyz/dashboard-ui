@@ -6,8 +6,6 @@ import DashboardLayout from 'layout/Dashboard';
 import PagesLayout from 'layout/Pages';
 
 // render - dashboard
-const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
-
 const TokensSettings = Loadable(lazy(() => import('pages/settings/tokens')));
 
 const AccountProfile = Loadable(lazy(() => import('pages/account')));
