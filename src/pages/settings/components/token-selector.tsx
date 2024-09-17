@@ -50,6 +50,7 @@ const TokenSelector: React.FC = () => {
 
   const [selectedTokens, setSelectedTokens] = useState<Record<string, Token>>({});
   const [allTokens, setAllTokens] = useState<Token[]>([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   useEffect(() => {
     const loadUserSettings = async () => {
@@ -130,6 +131,17 @@ const TokenSelector: React.FC = () => {
     }
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const filteredTokens = allTokens.filter((token: Token) => {
+    return (
+      token.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      token.symbol.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+  });
+
   const TokenButton = ({ token }: { token: Token }) => {
     const isSelected = selectedTokens[token.address].isSelected;
     return (
@@ -167,12 +179,12 @@ const TokenSelector: React.FC = () => {
   const sections: Section[] = [
     {
       title: 'Popular Tokens',
-      tokens: allTokens.filter((t) => t.category === 'popularTokens'),
+      tokens: filteredTokens.filter((t) => t.category === 'popularTokens'),
       category: 'popularTokens'
     },
     {
       title: 'Stable Tokens',
-      tokens: allTokens.filter((t) => t.category === 'stableTokens'),
+      tokens: filteredTokens.filter((t) => t.category === 'stableTokens'),
       category: 'stableTokens'
     }
   ];
@@ -189,6 +201,8 @@ const TokenSelector: React.FC = () => {
       <TextField
         placeholder="Searck token"
         margin="normal"
+        value={searchKeyword}
+        onChange={handleSearch}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -198,28 +212,39 @@ const TokenSelector: React.FC = () => {
         }}
       />
 
-      {sections.map(({ title, tokens, category }, index) => (
-        <div key={index} style={{ marginBottom: 24 }}>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
-            <Switch
-              checked={Object.values(selectedTokens).some((token) => token.category === category && token.isSelected)}
-              onChange={(e) => {
-                handleToggleSwitch(category, e.target.checked);
-              }}
-            />
-            <Typography variant="h6" style={{ flexGrow: 1 }}>
-              {title}
-            </Typography>
-          </div>
-          <Grid container spacing={2}>
-            {tokens.map((token, coinIndex) => (
-              <Grid item xs={12} sm={6} md={4} key={coinIndex}>
-                <TokenButton token={token} />
-              </Grid>
-            ))}
-          </Grid>
-        </div>
-      ))}
+      {filteredTokens.length > 0 ? (
+        <>
+          {sections.map(
+            ({ title, tokens, category }, index) =>
+              tokens.length > 0 && (
+                <div key={index} style={{ marginBottom: 24 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                    <Switch
+                      checked={Object.values(selectedTokens).some(
+                        (token) => token.category === category && token.isSelected
+                      )}
+                      onChange={(e) => {
+                        handleToggleSwitch(category, e.target.checked);
+                      }}
+                    />
+                    <Typography variant="h6" style={{ flexGrow: 1 }}>
+                      {title}
+                    </Typography>
+                  </div>
+                  <Grid container spacing={2}>
+                    {tokens.map((token, coinIndex) => (
+                      <Grid item xs={12} sm={6} md={4} key={coinIndex}>
+                        <TokenButton token={token} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </div>
+              )
+          )}
+        </>
+      ) : (
+        <p>No tokens found.</p>
+      )}
     </MainCard>
   );
 };
