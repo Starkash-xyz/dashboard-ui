@@ -13,7 +13,7 @@ import DashboardLayout from 'layout/Dashboard';
 const router = createBrowserRouter(
   [
     {
-      path: '/',
+      path: '/dashboard',
       element: <DashboardLayout />,
       children: [
         {
