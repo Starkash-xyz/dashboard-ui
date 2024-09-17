@@ -50,7 +50,7 @@ export const Auth0Provider = ({ children }: { children: React.ReactElement }) =>
             payload: {
               isLoggedIn: true,
               user: {
-                id: user?.sub,
+                uid: user?.sub,
                 email: user?.email
               }
             }
@@ -81,11 +81,9 @@ export const Auth0Provider = ({ children }: { children: React.ReactElement }) =>
         payload: {
           isLoggedIn: true,
           user: {
-            id: user?.sub,
-            avatar: user?.picture,
+            uid: user?.sub,
             email: user?.email,
-            name: user?.name,
-            tier: 'Premium'
+            name: user?.name
           }
         }
       });
@@ -108,7 +106,11 @@ export const Auth0Provider = ({ children }: { children: React.ReactElement }) =>
     return <Loader />;
   }
 
-  return <Auth0Context.Provider value={{ ...state, login, logout, resetPassword, updateProfile }}>{children}</Auth0Context.Provider>;
+  return (
+    <Auth0Context.Provider value={{ ...state, login, logout, resetPassword, updateProfile }}>
+      {children}
+    </Auth0Context.Provider>
+  );
 };
 
 export default Auth0Context;

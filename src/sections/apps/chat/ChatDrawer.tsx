@@ -191,12 +191,13 @@ function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, selectedUser }:
                   <UserAvatar user={{ online_status: status, avatar: 'avatar-1.png', name: 'User 1' }} />
                 </Grid>
                 <Grid item xs zeroMinWidth>
-                  <Stack sx={{ cursor: 'pointer', textDecoration: 'none' }} component={Link} to="/apps/profiles/user/personal">
+                  <Stack
+                    sx={{ cursor: 'pointer', textDecoration: 'none' }}
+                    component={Link}
+                    to="/apps/profiles/user/personal"
+                  >
                     <Typography align="left" variant="h5" color="textPrimary">
                       {user?.name}
-                    </Typography>
-                    <Typography align="left" variant="caption" color="textSecondary">
-                      {user?.role}
                     </Typography>
                   </Stack>
                 </Grid>
@@ -233,7 +234,12 @@ function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, selectedUser }:
                         size="small"
                         sx={{
                           color: theme.palette.success.main,
-                          '&:hover': { color: theme.palette.success.main, bgcolor: 'transparent', transition: 'none', padding: 0 }
+                          '&:hover': {
+                            color: theme.palette.success.main,
+                            bgcolor: 'transparent',
+                            transition: 'none',
+                            padding: 0
+                          }
                         }}
                       >
                         <CheckCircleFilled />
@@ -245,7 +251,12 @@ function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, selectedUser }:
                         size="small"
                         sx={{
                           color: theme.palette.error.main,
-                          '&:hover': { color: theme.palette.error.main, bgcolor: 'transparent', transition: 'none', padding: 0 }
+                          '&:hover': {
+                            color: theme.palette.error.main,
+                            bgcolor: 'transparent',
+                            transition: 'none',
+                            padding: 0
+                          }
                         }}
                       >
                         <ClockCircleFilled />
@@ -257,7 +268,12 @@ function ChatDrawer({ handleDrawerOpen, openChatDrawer, setUser, selectedUser }:
                         size="small"
                         sx={{
                           color: theme.palette.grey[400],
-                          '&:hover': { color: theme.palette.grey[400], bgcolor: 'transparent', transition: 'none', padding: 0 }
+                          '&:hover': {
+                            color: theme.palette.grey[400],
+                            bgcolor: 'transparent',
+                            transition: 'none',
+                            padding: 0
+                          }
                         }}
                       >
                         <MinusCircleFilled />

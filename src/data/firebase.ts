@@ -12,7 +12,7 @@ export const fetchUserSettings = async (
     const user = auth.user;
     if (!user) throw new Error('User not authenticated');
 
-    const userSettingsRef = doc(db, 'userSettings', user.uid);
+    const userSettingsRef = doc(db, 'userSettings', user.uid || '');
     const userSettingsSnapshot = await getDoc(userSettingsRef);
 
     if (userSettingsSnapshot.exists()) {
@@ -35,7 +35,7 @@ export const saveUserSettings = async (db: Firestore, auth: FirebaseContextType,
     const user = auth.user;
     if (!user) throw new Error('User not authenticated');
 
-    const userSettingsRef = doc(db, 'userSettings', user.uid);
+    const userSettingsRef = doc(db, 'userSettings', user.uid || '');
 
     await setDoc(userSettingsRef, { tokens }, { merge: true });
   } catch (error) {
