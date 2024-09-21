@@ -1,6 +1,5 @@
 import { doc, Firestore, getDoc, setDoc } from 'firebase/firestore';
 import { tokens, Token } from 'config';
-import { FirebaseContextType } from 'types/auth';
 
 function mergeTokensWithConfig(userTokens: Token[], defaultTokens: Token[]): Token[] {
   return defaultTokens.map((defaultToken) => {
@@ -14,22 +13,19 @@ function mergeTokensWithConfig(userTokens: Token[], defaultTokens: Token[]): Tok
 
 export const fetchUserSettings = async (
   db: Firestore,
-  auth: FirebaseContextType
+  userId: string
 ): Promise<{
   tokens: Token[];
 }> => {
   try {
-    const user = auth.user;
-    if (!user) throw new Error('User not authenticated');
-
-    const userSettingsRef = doc(db, 'userSettings', user.uid || '');
+    const userSettingsRef = doc(db, 'userSettings', userId || '');
     const userSettingsSnapshot = await getDoc(userSettingsRef);
 
     if (userSettingsSnapshot.exists()) {
       const data = userSettingsSnapshot.data();
       const mergedTokens = mergeTokensWithConfig(data.tokens || [], tokens);
 
-      await saveUserSettings(db, auth, mergedTokens);
+      await saveUserSettings(db, userId, mergedTokens);
 
       return {
         tokens: mergedTokens
@@ -44,12 +40,9 @@ export const fetchUserSettings = async (
   }
 };
 
-export const saveUserSettings = async (db: Firestore, auth: FirebaseContextType, tokens: Token[]) => {
+export const saveUserSettings = async (db: Firestore, userId: string, tokens: Token[]) => {
   try {
-    const user = auth.user;
-    if (!user) throw new Error('User not authenticated');
-
-    const userSettingsRef = doc(db, 'userSettings', user.uid || '');
+    const userSettingsRef = doc(db, 'userSettings', userId || '');
 
     await setDoc(userSettingsRef, { tokens }, { merge: true });
   } catch (error) {

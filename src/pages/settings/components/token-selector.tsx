@@ -58,7 +58,11 @@ const TokenSelector: React.FC = () => {
     const loadUserSettings = async () => {
       try {
         setLoading(true);
-        const userSettings = await fetchUserSettings(db, auth);
+
+        const user = auth.user;
+        if (!user) throw new Error('User not authenticated');
+
+        const userSettings = await fetchUserSettings(db, user.uid || '');
         const selectedTokensMap: Record<string, Token> = {};
 
         userSettings.tokens.forEach((token) => {
@@ -81,6 +85,9 @@ const TokenSelector: React.FC = () => {
 
   const toggleTokenSelection = async (token: Token) => {
     try {
+      const user = auth.user;
+      if (!user) throw new Error('User not authenticated');
+
       const updatedTokens = { ...selectedTokens };
       const isSelected = updatedTokens[token.address].isSelected ?? false;
 
@@ -92,7 +99,7 @@ const TokenSelector: React.FC = () => {
       setSelectedTokens(updatedTokens);
 
       const selectedTokenList = Object.values(updatedTokens);
-      await saveUserSettings(db, auth, selectedTokenList);
+      await saveUserSettings(db, user.uid || '', selectedTokenList);
       enqueueSnackbar('User settings have been successfully saved.', {
         variant: 'success',
         anchorOrigin: { vertical: 'bottom', horizontal: 'right' }
@@ -108,6 +115,9 @@ const TokenSelector: React.FC = () => {
 
   const handleToggleSwitch = async (category: string, isOn: boolean) => {
     try {
+      const user = auth.user;
+      if (!user) throw new Error('User not authenticated');
+
       const updatedTokens = { ...selectedTokens };
       const categoryTokens = allTokens.filter((token) => token.category === category);
 
@@ -123,7 +133,7 @@ const TokenSelector: React.FC = () => {
       setSelectedTokens(updatedTokens);
 
       const selectedTokenList = Object.values(updatedTokens);
-      await saveUserSettings(db, auth, selectedTokenList);
+      await saveUserSettings(db, user.uid || '', selectedTokenList);
       enqueueSnackbar('User settings have been successfully saved.', {
         variant: 'success',
         anchorOrigin: { vertical: 'bottom', horizontal: 'right' }

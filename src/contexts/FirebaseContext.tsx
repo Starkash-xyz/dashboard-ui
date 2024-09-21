@@ -12,6 +12,7 @@ import authReducer from 'contexts/auth-reducer/auth';
 // project import
 import Loader from 'components/Loader';
 import { AuthProps, FirebaseContextType } from 'types/auth';
+import { fetchUserSettings } from 'data/firebase';
 
 // firebase initialize
 if (!firebase.apps.length) {
@@ -51,6 +52,8 @@ export const FirebaseProvider = ({ children }: { children: React.ReactElement })
           email: user.email,
           name: user.displayName || ''
         });
+
+        await fetchUserSettings(db, user.uid);
 
         console.log('User saved with ID: ', user.uid);
       }
