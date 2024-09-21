@@ -102,13 +102,13 @@ const TokenSelector: React.FC = () => {
       await saveUserSettings(db, user.uid || '', selectedTokenList);
       enqueueSnackbar('User settings have been successfully saved.', {
         variant: 'success',
-        anchorOrigin: { vertical: 'bottom', horizontal: 'right' }
+        anchorOrigin: { vertical: 'top', horizontal: 'right' }
       });
     } catch (error) {
       console.error('Error saving user settings:', error);
       enqueueSnackbar('Failed to save user settings.', {
         variant: 'error',
-        anchorOrigin: { vertical: 'bottom', horizontal: 'right' }
+        anchorOrigin: { vertical: 'top', horizontal: 'right' }
       });
     }
   };
@@ -136,13 +136,13 @@ const TokenSelector: React.FC = () => {
       await saveUserSettings(db, user.uid || '', selectedTokenList);
       enqueueSnackbar('User settings have been successfully saved.', {
         variant: 'success',
-        anchorOrigin: { vertical: 'bottom', horizontal: 'right' }
+        anchorOrigin: { vertical: 'top', horizontal: 'right' }
       });
     } catch (error) {
       console.error('Error saving user settings:', error);
       enqueueSnackbar('Failed to save user settings.', {
         variant: 'error',
-        anchorOrigin: { vertical: 'bottom', horizontal: 'right' }
+        anchorOrigin: { vertical: 'top', horizontal: 'right' }
       });
     }
   };
