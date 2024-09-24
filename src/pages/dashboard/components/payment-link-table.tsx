@@ -486,7 +486,7 @@ const PaymentLinkTable = () => {
         accessorKey: 'invoiceUrl',
         enableGrouping: false,
         cell: ({ row }) => {
-          const url = `${PAYMENT_SITE_URL}/?iid=${row.original.invoiceId}`;
+          const url = `${PAYMENT_SITE_URL}/?id=${row.original.invoiceId}`;
           return (
             <a href={url} target="_blank" rel="noreferrer">
               {url}
