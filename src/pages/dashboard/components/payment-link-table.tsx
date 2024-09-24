@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
 // material-ui
 import { alpha, useTheme } from '@mui/material/styles';
@@ -16,11 +16,7 @@ import {
   Divider,
   useMediaQuery,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
+  Skeleton
 } from '@mui/material';
 
 // third-party
@@ -53,7 +49,6 @@ import {
 import { compareItems, rankItem, RankingInfo } from '@tanstack/match-sorter-utils';
 
 // project import
-import makeData from 'data/react-table';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import {
@@ -68,13 +63,18 @@ import {
 } from 'components/third-party/react-table';
 
 // types
-import { TableDataProps } from 'types/table';
 import { LabelKeyObject } from 'react-csv/lib/core';
 import IconButton from 'components/@extended/IconButton';
 import { DownOutlined, GroupOutlined, RightOutlined, UngroupOutlined } from '@ant-design/icons';
 import ExpandingUserDetail from 'sections/tables/react-table/ExpandingUserDetail';
+import CreatePaymentLinkForm from './create-payment-link';
+import { PAYMENT_SITE_URL, PaymentLink } from 'config';
+import { getAllPaymentsByUserId } from 'data/firebase';
+import useAuth from 'hooks/useAuth';
+import { getFirestore } from 'firebase/firestore';
+import { enqueueSnackbar } from 'notistack';
 
-export const fuzzyFilter: FilterFn<TableDataProps> = (row, columnId, value, addMeta) => {
+export const fuzzyFilter: FilterFn<PaymentLink> = (row, columnId, value, addMeta) => {
   // rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
 
@@ -85,12 +85,15 @@ export const fuzzyFilter: FilterFn<TableDataProps> = (row, columnId, value, addM
   return itemRank.passed;
 };
 
-export const fuzzySort: SortingFn<TableDataProps> = (rowA, rowB, columnId) => {
+export const fuzzySort: SortingFn<PaymentLink> = (rowA, rowB, columnId) => {
   let dir = 0;
 
   // only sort by rank if the column has ranking information
   if (rowA.columnFiltersMeta[columnId]) {
-    dir = compareItems(rowA.columnFiltersMeta[columnId]! as RankingInfo, rowB.columnFiltersMeta[columnId]! as RankingInfo);
+    dir = compareItems(
+      rowA.columnFiltersMeta[columnId]! as RankingInfo,
+      rowB.columnFiltersMeta[columnId]! as RankingInfo
+    );
   }
 
   // provide an alphanumeric fallback for when the item ranks are equal
@@ -100,14 +103,15 @@ export const fuzzySort: SortingFn<TableDataProps> = (rowA, rowB, columnId) => {
 // ==============================|| REACT TABLE - EDIT ACTION ||============================== //
 
 interface ReactTableProps {
-  defaultColumns: ColumnDef<TableDataProps>[];
-  data: TableDataProps[];
+  defaultColumns: ColumnDef<PaymentLink>[];
+  data: PaymentLink[];
   setData: any;
+  openModal: () => void;
 }
 
 // ==============================|| REACT TABLE ||============================== //
 
-function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
+function ReactTable({ defaultColumns, data, setData, openModal }: ReactTableProps) {
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -162,7 +166,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
     globalFilterFn: fuzzyFilter,
-    getRowId: (row) => row.id.toString(), // good to have guaranteed unique row ids/keys for rendering
+    getRowId: (row) => row.invoiceId,
     debugTable: true,
     debugHeaders: true,
     debugColumns: true,
@@ -171,13 +175,13 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
       setSelectedRow,
       revertData: (rowIndex: number, revert: unknown) => {
         if (revert) {
-          setData((old: TableDataProps[]) => old.map((row, index) => (index === rowIndex ? originalData[rowIndex] : row)));
+          setData((old: PaymentLink[]) => old.map((row, index) => (index === rowIndex ? originalData[rowIndex] : row)));
         } else {
           setOriginalData((old) => old.map((row, index) => (index === rowIndex ? data[rowIndex] : row)));
         }
       },
       updateData: (rowIndex, columnId, value) => {
-        setData((old: TableDataProps[]) =>
+        setData((old: PaymentLink[]) =>
           old.map((row, index) => {
             if (index === rowIndex) {
               return {
@@ -192,9 +196,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
     }
   });
 
-  const [openPaymentLinkModal, setOpenPaymenLinkModal] = useState(false);
-
-  useEffect(() => setColumnVisibility({ id: false, role: false, contact: false, country: false, progress: false }), []);
+  useEffect(() => setColumnVisibility({ id: false }), []);
 
   const backColor = alpha(theme.palette.primary.lighter, 0.1);
 
@@ -216,7 +218,10 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
         direction={{ xs: 'column', sm: 'row' }}
         spacing={2}
         justifyContent="space-between"
-        sx={{ padding: 2, ...(matchDownSM && { '& .MuiOutlinedInput-root, & .MuiFormControl-root': { width: '100%' } }) }}
+        sx={{
+          padding: 2,
+          ...(matchDownSM && { '& .MuiOutlinedInput-root, & .MuiFormControl-root': { width: '100%' } })
+        }}
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ width: { xs: '100%', sm: 'auto' } }}>
           <Button
@@ -224,7 +229,7 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
             sx={{
               marginBottom: '32px'
             }}
-            onClick={() => setOpenPaymenLinkModal(true)}
+            onClick={openModal}
           >
             Create payment link
           </Button>
@@ -335,10 +340,14 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
                                   >
                                     {row.getIsExpanded() ? <DownOutlined /> : <RightOutlined />}
                                   </IconButton>
-                                  <Box>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Box> <Box>({row.subRows.length})</Box>
+                                  <Box>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Box>{' '}
+                                  <Box>({row.subRows.length})</Box>
                                 </Stack>
                               ) : cell.getIsAggregated() ? (
-                                flexRender(cell.column.columnDef.aggregatedCell ?? cell.column.columnDef.cell, cell.getContext())
+                                flexRender(
+                                  cell.column.columnDef.aggregatedCell ?? cell.column.columnDef.cell,
+                                  cell.getContext()
+                                )
                               ) : cell.getIsPlaceholder() ? null : (
                                 flexRender(cell.column.columnDef.cell, cell.getContext())
                               )}
@@ -390,27 +399,6 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
           />
         </Box>
       </ScrollX>
-
-      <Dialog open={openPaymentLinkModal} onClose={() => setOpenPaymenLinkModal(false)}>
-        <Box sx={{ p: 1, py: 1.5 }}>
-          <DialogTitle variant="h2" sx={{ fontSize: '24px' }}>
-            Create payment link
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button color="error" onClick={() => setOpenPaymenLinkModal(false)}>
-              Disagree
-            </Button>
-            <Button variant="contained" onClick={() => setOpenPaymenLinkModal(false)} autoFocus>
-              Agree
-            </Button>
-          </DialogActions>
-        </Box>
-      </Dialog>
     </MainCard>
   );
 }
@@ -418,74 +406,135 @@ function ReactTable({ defaultColumns, data, setData }: ReactTableProps) {
 // ==============================|| REACT TABLE - UMBRELLA ||============================== //
 
 const PaymentLinkTable = () => {
-  // TODO: real data
-  const [data, setData] = useState<TableDataProps[]>(() => makeData(0));
+  const db = getFirestore();
+  const auth = useAuth();
 
-  const columns = useMemo<ColumnDef<TableDataProps>[]>(
-    () => [
+  const [loading, setLoading] = useState(false);
+  const [openPaymentLinkModal, setOpenPaymenLinkModal] = useState(false);
+  const [data, setData] = useState<PaymentLink[]>([]);
+
+  const loadPaymentLinks = useCallback(async () => {
+    try {
+      setLoading(true);
+      const user = auth.user;
+      if (!user) throw new Error('User not authenticated');
+
+      const payments = await getAllPaymentsByUserId(db, user.uid || '');
+      setData(payments);
+    } catch (error) {
+      console.error('Error loading user settings:', error);
+      enqueueSnackbar('Failed to load user settings.', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  }, [auth.user, db]);
+
+  useEffect(() => {
+    loadPaymentLinks();
+  }, [loadPaymentLinks]);
+
+  const columnsMemo = useMemo<ColumnDef<PaymentLink>[]>(() => {
+    const columns: ColumnDef<PaymentLink>[] = [
       {
         id: 'id',
-        title: '#',
         header: '#',
-        accessorKey: 'id',
-        dataType: 'text'
+        accessorKey: 'id'
       },
       {
         id: 'paymentId',
-        title: 'Payment Link ID',
         header: 'Payment Link ID',
-        accessorKey: 'paymentId',
-        dataType: 'text',
-        enableGrouping: false
+        accessorKey: 'invoiceId',
+        enableGrouping: false,
+        cell: ({ row }) => {
+          return <span>{row.original.invoiceId.replace(/^(.{6}).*(.{6})$/, '$1....$2')}</span>;
+        }
       },
       {
         id: 'orderId',
         header: 'Order ID',
         footer: 'Order ID',
         accessorKey: 'orderId',
-        dataType: 'text',
-        enableGrouping: false
+        enableGrouping: false,
+        cell: ({ row }) => {
+          return <span>{row.original.orderId}</span>;
+        }
       },
       {
         id: 'price',
         header: 'Price',
         footer: 'Price',
         accessorKey: 'price',
-        dataType: 'text',
-        enableGrouping: false
+        enableGrouping: false,
+        cell: ({ row }) => {
+          return <span>{row.original.price}</span>;
+        }
       },
       {
-        id: 'currency',
-        header: 'Currency',
-        footer: 'Currency',
-        accessorKey: 'currency',
-        dataType: 'text',
-        enableGrouping: false
+        id: 'token',
+        header: 'Token',
+        footer: 'Token',
+        accessorKey: 'token',
+        enableGrouping: false,
+        cell: ({ row }) => {
+          return <span>{row.original.token.symbol}</span>;
+        }
       },
       {
         id: 'invoiceUrl',
         header: 'Invoice Url',
         footer: 'Invoice Url',
         accessorKey: 'invoiceUrl',
-        dataType: 'text',
-        enableGrouping: false
+        enableGrouping: false,
+        cell: ({ row }) => {
+          const url = `${PAYMENT_SITE_URL}/?iid=${row.original.invoiceId}`;
+          return (
+            <a href={url} target="_blank" rel="noreferrer">
+              {url}
+            </a>
+          );
+        }
       },
       {
         id: 'createdAt',
         header: 'Created At',
         footer: 'Created At',
         accessorKey: 'createdAt',
-        dataType: 'text',
-        enableGrouping: false
+        enableGrouping: false,
+        cell: ({ row }) => {
+          const formattedDate = new Date(row.original.createdAt)
+            .toLocaleString('en-GB', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            })
+            .replace(',', '');
+          return formattedDate;
+        }
       }
-    ],
-    // eslint-disable-next-line
-    []
-  );
+    ];
+
+    return loading
+      ? columns.map((column) => ({
+          ...column,
+          cell: () => <Skeleton />
+        }))
+      : columns;
+  }, [loading]);
 
   return (
     <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
-      <ReactTable {...{ data, defaultColumns: columns, setData }} />
+      <ReactTable {...{ data, defaultColumns: columnsMemo, setData, openModal: () => setOpenPaymenLinkModal(true) }} />
+
+      <CreatePaymentLinkForm
+        open={openPaymentLinkModal}
+        onClose={() => {
+          setOpenPaymenLinkModal(false);
+          loadPaymentLinks();
+        }}
+      />
     </DndProvider>
   );
 };

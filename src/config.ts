@@ -10,6 +10,8 @@ import USDTLogo from './assets/images/tokens/usdt.svg';
 
 // ==============================|| THEME CONSTANT ||============================== //
 
+export const PAYMENT_SITE_URL = 'https://pay.starkash.xyz';
+
 export const twitterColor = '#1DA1F2';
 export const facebookColor = '#3b5998';
 export const linkedInColor = '#0e76a8';
@@ -128,5 +130,16 @@ export const tokens: Token[] = [
     isSelected: true
   }
 ];
+
+export interface PaymentLink {
+  token: Token;
+  price: number;
+  description: string;
+  orderId: string;
+  fixedRate: boolean;
+  feePaidByUser: boolean;
+  createdAt: number;
+  invoiceId: string;
+}
 
 export default config;

@@ -8,27 +8,31 @@ import { useDrag, useDrop } from 'react-dnd';
 import { Column, ColumnOrderState, Header, Table } from '@tanstack/react-table';
 
 // types
-import { TableDataProps } from 'types/table';
+import { PaymentLink } from 'config';
 
 const reorderColumn = (draggedColumnId: string, targetColumnId: string, columnOrder: string[]): ColumnOrderState => {
-  columnOrder.splice(columnOrder.indexOf(targetColumnId), 0, columnOrder.splice(columnOrder.indexOf(draggedColumnId), 1)[0] as string);
+  columnOrder.splice(
+    columnOrder.indexOf(targetColumnId),
+    0,
+    columnOrder.splice(columnOrder.indexOf(draggedColumnId), 1)[0] as string
+  );
   return [...columnOrder];
 };
 
 // ==============================|| DRAGGABLE COLUMN ||============================== //
 
-const DraggableColumnHeader: FC<{ header: Header<TableDataProps, unknown>; table: Table<TableDataProps>; children: ReactElement }> = ({
-  header,
-  table,
-  children
-}) => {
+const DraggableColumnHeader: FC<{
+  header: Header<PaymentLink, unknown>;
+  table: Table<PaymentLink>;
+  children: ReactElement;
+}> = ({ header, table, children }) => {
   const { getState, setColumnOrder } = table;
   const { columnOrder } = getState();
   const { column } = header;
 
   const [{ isOverCurrent }, dropRef] = useDrop({
     accept: 'column',
-    drop: (draggedColumn: Column<TableDataProps>) => {
+    drop: (draggedColumn: Column<PaymentLink>) => {
       const newColumnOrder = reorderColumn(draggedColumn.id, column.id, columnOrder);
       setColumnOrder(newColumnOrder);
     },
@@ -49,7 +53,10 @@ const DraggableColumnHeader: FC<{ header: Header<TableDataProps, unknown>; table
   return (
     <TableCell ref={dropRef} colSpan={header.colSpan} sx={{ cursor: 'move' }} {...header.column.columnDef.meta}>
       <Box component="span" ref={previewRef}>
-        <Box ref={dragRef} sx={{ color: isOverCurrent ? 'primary.main' : 'text.primary', opacity: isDragging ? 0.9 : 1 }}>
+        <Box
+          ref={dragRef}
+          sx={{ color: isOverCurrent ? 'primary.main' : 'text.primary', opacity: isDragging ? 0.9 : 1 }}
+        >
           {children}
         </Box>
       </Box>

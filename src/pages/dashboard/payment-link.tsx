@@ -23,11 +23,14 @@ function PaymentLink() {
         >
           <Stack>
             <Typography variant="h4">Get started</Typography>
-            <Typography variant="body1" sx={{ marginTop: '16px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Typography
+              variant="body1"
+              sx={{ marginTop: '16px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '4px' }}
+            >
               <MdInfo color="#1677ff" size={20} />
               <span>
-                Here you can create a Payment link (also known as Invoice), share it with your customers, and see all the information about
-                the Payment links created previously.
+                Here you can create a Payment link (also known as Invoice), share it with your customers, and see all
+                the information about the Payment links created previously.
               </span>
             </Typography>
             <Typography variant="h5">How to use</Typography>
