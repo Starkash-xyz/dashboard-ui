@@ -7,11 +7,22 @@ import LoginRoutes from './LoginRoutes';
 // types
 import DashboardDefault from 'pages/dashboard/default';
 import DashboardLayout from 'layout/Dashboard';
+import Welcome from 'pages/dashboard/welcome';
 
 // ==============================|| ROUTING RENDER ||============================== //
 
 const router = createBrowserRouter(
   [
+    {
+      path: '/',
+      element: <DashboardLayout />,
+      children: [
+        {
+          index: true,
+          element: <Welcome />
+        }
+      ]
+    },
     {
       path: '/dashboard',
       element: <DashboardLayout />,
