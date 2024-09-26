@@ -140,6 +140,7 @@ export interface PaymentLink {
   feePaidByUser: boolean;
   createdAt: number;
   invoiceId: string;
+  status: string;
 }
 
 export default config;

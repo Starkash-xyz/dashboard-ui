@@ -1,4 +1,4 @@
-import { arrayUnion, doc, Firestore, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, Firestore, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { tokens, Token, PaymentLink } from 'config';
 
 function mergeTokensWithConfig(userTokens: Token[], defaultTokens: Token[]): Token[] {
@@ -53,18 +53,10 @@ export const saveUserSettings = async (db: Firestore, userId: string, tokens: To
 
 export const savePaymentLink = async (db: Firestore, userId: string, paymentLink: PaymentLink) => {
   try {
-    const paymentLinkRef = doc(db, 'paymentLinks', userId || '');
-    const docSnap = await getDoc(paymentLinkRef);
-
-    if (docSnap.exists()) {
-      await updateDoc(paymentLinkRef, {
-        payments: arrayUnion(paymentLink)
-      });
-    } else {
-      await setDoc(paymentLinkRef, {
-        payments: [paymentLink]
-      });
-    }
+    const paymentsCollectionRef = collection(db, 'paymentLinks', userId || '', 'payments');
+    await addDoc(paymentsCollectionRef, {
+      ...paymentLink
+    });
   } catch (error) {
     console.error('Error saving user settings:', error);
     throw error;
@@ -77,16 +69,20 @@ export const getAllPaymentsByUserId = async (db: Firestore, userId: string) => {
     return null;
   }
 
-  const userDocRef = doc(db, 'paymentLinks', userId);
+  const paymentsCollectionRef = collection(db, 'paymentLinks', userId, 'payments');
 
   try {
-    const docSnap = await getDoc(userDocRef);
+    const querySnapshot = await getDocs(paymentsCollectionRef);
 
-    if (docSnap.exists()) {
-      const { payments } = docSnap.data();
-      return payments || [];
+    const payments = querySnapshot.docs.map((doc: { id: any; data: () => any }) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    if (payments.length > 0) {
+      return payments;
     } else {
-      console.log('No payment data found for this user.');
+      console.log('No payments found for this user.');
       return [];
     }
   } catch (error) {

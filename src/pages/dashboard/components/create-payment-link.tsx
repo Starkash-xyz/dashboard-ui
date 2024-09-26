@@ -152,7 +152,8 @@ function CreatePaymentLinkForm({ open, onClose }: CreatePaymentLinkFormProps) {
         fixedRate,
         feePaidByUser,
         createdAt: Date.now(),
-        invoiceId: uuidv4()
+        invoiceId: uuidv4(),
+        status: 'unpaid'
       };
       await savePaymentLink(db, user.uid || '', paymentLink);
       enqueueSnackbar('Payment link have been successfully created.', {
