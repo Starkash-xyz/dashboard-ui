@@ -51,10 +51,10 @@ export const saveUserSettings = async (db: Firestore, userId: string, tokens: To
   }
 };
 
-export const savePaymentLink = async (db: Firestore, userId: string, paymentLink: PaymentLink) => {
+export const savePaymentLink = async (db: Firestore, paymentLink: PaymentLink) => {
   try {
-    const paymentsCollectionRef = collection(db, 'paymentLinks', userId || '', 'payments');
-    await addDoc(paymentsCollectionRef, {
+    const paymentLinksCollection = collection(db, 'paymentLinks');
+    await addDoc(paymentLinksCollection, {
       ...paymentLink
     });
   } catch (error) {
@@ -69,20 +69,21 @@ export const getAllPaymentsByUserId = async (db: Firestore, userId: string) => {
     return null;
   }
 
-  const paymentsCollectionRef = collection(db, 'paymentLinks', userId, 'payments');
+  const paymentsCollectionRef = collection(db, 'paymentLinks');
 
   try {
     const querySnapshot = await getDocs(paymentsCollectionRef);
 
-    const payments = querySnapshot.docs.map((doc: { id: any; data: () => any }) => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    const payments = querySnapshot.docs
+      .map((doc: { id: any; data: () => any }) => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+      .filter((payment) => payment.userId === userId);
 
     if (payments.length > 0) {
       return payments;
     } else {
-      console.log('No payments found for this user.');
       return [];
     }
   } catch (error) {

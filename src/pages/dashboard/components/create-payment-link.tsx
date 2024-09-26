@@ -140,7 +140,7 @@ function CreatePaymentLinkForm({ open, onClose }: CreatePaymentLinkFormProps) {
 
     try {
       const user = auth.user;
-      if (!user) throw new Error('User not authenticated');
+      if (!user || !user.uid) throw new Error('User not authenticated');
 
       if (!selectedToken) throw new Error('You must select pay currency first');
 
@@ -153,16 +153,17 @@ function CreatePaymentLinkForm({ open, onClose }: CreatePaymentLinkFormProps) {
         feePaidByUser,
         createdAt: Date.now(),
         invoiceId: uuidv4(),
-        status: 'unpaid'
+        status: 'unpaid',
+        userId: user.uid
       };
-      await savePaymentLink(db, user.uid || '', paymentLink);
+      await savePaymentLink(db, paymentLink);
       enqueueSnackbar('Payment link have been successfully created.', {
         variant: 'success',
         anchorOrigin: { vertical: 'top', horizontal: 'right' }
       });
     } catch (error) {
       console.error('Error saving payment link: ', error);
-      enqueueSnackbar('Failed to save user settings.', {
+      enqueueSnackbar('Failed to save payment link.', {
         variant: 'error',
         anchorOrigin: { vertical: 'top', horizontal: 'right' }
       });
