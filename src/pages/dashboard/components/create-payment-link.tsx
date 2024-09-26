@@ -154,7 +154,8 @@ function CreatePaymentLinkForm({ open, onClose }: CreatePaymentLinkFormProps) {
         createdAt: Date.now(),
         invoiceId: uuidv4(),
         status: 'unpaid',
-        userId: user.uid
+        userId: user.uid,
+        merchantId: 1
       };
       await savePaymentLink(db, paymentLink);
       enqueueSnackbar('Payment link have been successfully created.', {

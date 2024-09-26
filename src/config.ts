@@ -142,6 +142,7 @@ export interface PaymentLink {
   invoiceId: string;
   status: string;
   userId: string;
+  merchantId: number;
 }
 
 export default config;
