@@ -13,7 +13,7 @@ import {
   InputAdornment,
   Autocomplete,
   Box,
-  ListItemButton
+  ListItem
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { IoIosInformationCircleOutline, IoIosSearch } from 'react-icons/io';
@@ -33,12 +33,13 @@ function PaymentCurrencySelect({ tokens, value, onChange }: PaymentTokenSelectPr
   return (
     <Autocomplete
       value={value}
-      onChange={(event, newValue) => onChange(newValue)}
       options={tokens}
-      getOptionLabel={(token) => `${token.name} (${token.symbol})`}
+      onChange={(event, newValue) => onChange(newValue)}
+      getOptionLabel={(token) => `${token.symbol}`}
       renderOption={(props, option) => (
-        <ListItemButton
+        <ListItem
           key={option.symbol}
+          {...props}
           sx={{
             '&:hover': {
               backgroundColor: option.available ? '#e6f4ff' : '#fff',
@@ -78,7 +79,7 @@ function PaymentCurrencySelect({ tokens, value, onChange }: PaymentTokenSelectPr
               {option.available ? option.network?.name : 'Coming soon'}
             </Typography>
           )}
-        </ListItemButton>
+        </ListItem>
       )}
       renderInput={(params) => (
         <TextField
@@ -252,7 +253,14 @@ function CreatePaymentLinkForm({ open, onClose }: CreatePaymentLinkFormProps) {
               }
             />
 
-            <Button variant="contained" color="primary" fullWidth sx={{ marginTop: 2 }} onClick={handleSubmit}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ marginTop: 2 }}
+              onClick={handleSubmit}
+              disabled={!selectedToken?.available}
+            >
               Confirm
             </Button>
           </>
