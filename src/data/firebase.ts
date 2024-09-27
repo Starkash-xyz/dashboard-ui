@@ -66,7 +66,7 @@ export const savePaymentLink = async (db: Firestore, paymentLink: PaymentLink) =
 export const getAllPaymentsByUserId = async (db: Firestore, userId: string) => {
   if (!userId) {
     console.error('User ID is required');
-    return null;
+    return [];
   }
 
   const paymentsCollectionRef = collection(db, 'paymentLinks');
