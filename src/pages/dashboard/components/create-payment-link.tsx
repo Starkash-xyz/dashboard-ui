@@ -13,7 +13,8 @@ import {
   InputAdornment,
   Autocomplete,
   Box,
-  ListItem
+  ListItem,
+  ListItemButton
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { IoIosInformationCircleOutline, IoIosSearch } from 'react-icons/io';
@@ -37,19 +38,25 @@ function PaymentCurrencySelect({ tokens, value, onChange }: PaymentTokenSelectPr
       options={tokens}
       getOptionLabel={(token) => `${token.name} (${token.symbol})`}
       renderOption={(props, option) => (
-        <ListItem
+        <ListItemButton
           key={option.symbol}
-          {...props}
           sx={{
             '&:hover': {
-              backgroundColor: '#e6f4ff'
+              backgroundColor: option.available ? '#e6f4ff' : '#fff',
+              cursor: option.available ? 'cursor' : 'default'
             }
           }}
         >
           <img
             src={option.logo}
             alt={option.name}
-            style={{ width: 30, height: 30, borderRadius: '50%', marginRight: '16px' }}
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: '50%',
+              marginRight: '16px',
+              filter: option.available ? 'none' : 'grayscale(1)'
+            }}
           />
           <Box>
             <Typography variant="body1">{option.symbol}</Typography>
@@ -62,17 +69,17 @@ function PaymentCurrencySelect({ tokens, value, onChange }: PaymentTokenSelectPr
               variant="caption"
               sx={{
                 marginLeft: 'auto',
-                backgroundColor: option.network.color,
+                backgroundColor: option.available ? option.network.color : '#c6c6c6',
                 color: '#fff',
                 padding: '2px 6px',
                 borderRadius: '5px',
                 fontSize: '12px'
               }}
             >
-              {option.network?.name}
+              {option.available ? option.network?.name : 'Coming soon'}
             </Typography>
           )}
-        </ListItem>
+        </ListItemButton>
       )}
       renderInput={(params) => (
         <TextField
