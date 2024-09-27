@@ -13,7 +13,6 @@ import {
   InputAdornment,
   Autocomplete,
   Box,
-  ListItem,
   ListItemButton
 } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
